@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,11 +23,15 @@
             <?php unset($_SESSION["error"]); ?>
         <?php endif; ?>
 
-        <form id="formRegistro" action="../php/usuarios.php" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form id="formRegistro" action="../php/usuario.php" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <?php if (isset($_GET['accion']) && $_GET['accion'] == 'crear'): ?>
+                <input type="hidden" name="accionGestionar" value="crear">
+            <?php endif; ?>
+            
             <!-- Cedula -->
             <div class="md:col-span-1 col-span-2">
                 <label for="cedula" class="block mb-1 font-medium">Cédula:</label>
-                <input type="text" id="cedula" name="cedula"
+                <input type="number" id="cedula" name="cedula"
                     placeholder="Cédula del usuario"
                     value="<?php echo isset($_SESSION['dataTemp']['cedula']) ? $_SESSION['dataTemp']['cedula'] : ''; ?>"
                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
@@ -42,7 +47,7 @@
             <!-- Teléfono -->
             <div class="md:col-span-1 col-span-2">
                 <label for="telefono" class="block mb-1 font-medium">Teléfono:</label>
-                <input type="text" id="telefono" name="telefono"
+                <input type="number" id="telefono" name="telefono"
                     placeholder="Teléfono del usuario"
                     value="<?php echo isset($_SESSION['dataTemp']['telefono']) ? $_SESSION['dataTemp']['telefono'] : ''; ?>"
                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
@@ -78,7 +83,7 @@
                 <select name="rol" id="rol" required
                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
                     <option class="text-gray-600" value="">-- Selecciona un rol --</option>
-                    <option value="paciente" <?php echo (isset($_SESSION['dataTemp']['rol']) && $_SESSION['dataTemp']['rol'] === 'paciente') ? 'selected' : ''; ?>>Paciente</option>
+                    <option value="paciente" <?php echo (isset($_SESSION['dataTemp']['rol']) && $_SESSION['dataTemp']['rol'] === 'paciente') ? 'selected' : 'selected'; ?>>Paciente</option>
                     <option value="medico" <?php echo (isset($_SESSION['dataTemp']['rol']) && $_SESSION['dataTemp']['rol'] === 'medico') ? 'selected' : ''; ?>>Médico</option>
                     <option value="admin" <?php echo (isset($_SESSION['dataTemp']['rol']) && $_SESSION['dataTemp']['rol'] === 'admin') ? 'selected' : ''; ?>>Administrador</option>
                 </select>
