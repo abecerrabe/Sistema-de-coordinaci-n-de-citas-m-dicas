@@ -24,7 +24,7 @@
         <?php endif; ?>
 
         <form id="formRegistro" action="../php/usuario.php" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <?php if (isset($_GET['accion']) && $_GET['accion'] == 'crear'): ?>
+            <?php if (isset($_GET['accion']) && $_GET['accion'] == 'crear'): unset($_SESSION['dataTemp'])?>
                 <input type="hidden" name="accionGestionar" value="crear">
             <?php endif; ?>
             

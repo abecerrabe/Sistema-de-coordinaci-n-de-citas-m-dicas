@@ -121,7 +121,7 @@ $usuarios = select("usuarios", "*", $where, $params);
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="5" class="text-center py-4">No se encontraron usuarios</td>
+                                <td colspan="6" class="text-center py-4">No se encontraron usuarios</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
