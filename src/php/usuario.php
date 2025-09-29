@@ -131,6 +131,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $passwordHash = password_hash($contrasena, PASSWORD_DEFAULT);
             }
 
+            //Esto debe ir cuando el usuario se logeo
+            $_SESSION["id"] = $id;
+            $_SESSION["cedula"] = $cedula;
+            $_SESSION["usuario"] = $nombre;
+            $_SESSION["rol"] = $rol;
+            $_SESSION["estado"] = $estado;
+
             // Preparar los datos a actualizar
             $datosActualizar = [
                 "cedula"     => $cedula,

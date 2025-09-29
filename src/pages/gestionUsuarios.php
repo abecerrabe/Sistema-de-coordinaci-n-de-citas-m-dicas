@@ -37,6 +37,7 @@ $usuarios = select("usuarios", "*", $where, $params);
 <body class="bg-gray-100 min-h-screen p-6">
 
     <!-- NAV -->
+     <?php include 'navegador.php'; ?>
 
     <!-- CONTENIDO -->
     <main class="flex-1 w-full mx-auto pt-6">
