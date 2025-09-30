@@ -1,0 +1,173 @@
+/* style.css - Fondo azul claro difuminado hacia blanco */
+body {
+    background: linear-gradient(135deg, #74b9ff 0%, #ffffff 100%) !important;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Login page */
+.login-body {
+    background: linear-gradient(135deg, #74b9ff 0%, #ffffff 100%) !important;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.card {
+    border-radius: 15px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Sidebar mejorado */
+.sidebar {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%) !important;
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar h4 {
+    color: white !important;
+    font-weight: bold;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    padding: 12px 15px;
+    margin: 5px 0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.sidebar .nav-link:hover, 
+.sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    transform: translateX(5px);
+}
+
+.table-actions {
+    white-space: nowrap;
+}
+
+/* Mejoras para tablas */
+.table {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%) !important;
+    color: white !important;
+    border: none;
+    padding: 12px;
+}
+
+.table td {
+    padding: 12px;
+    border-color: #e9ecef;
+    color: #333 !important;
+}
+
+/* Mejoras para formularios */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #74b9ff;
+    box-shadow: 0 0 0 0.2rem rgba(116, 185, 255, 0.25);
+}
+
+/* Botones mejorados */
+.btn {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(116, 185, 255, 0.4);
+}
+
+/* Badges mejorados */
+.badge {
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.bg-primary { background: linear-gradient(135deg, #74b9ff, #0984e3) !important; }
+.bg-success { background: linear-gradient(135deg, #00b894, #00a085) !important; }
+.bg-warning { background: linear-gradient(135deg, #fdcb6e, #e17055) !important; }
+.bg-danger { background: linear-gradient(135deg, #e17055, #d63031) !important; }
+
+/* Alertas con transparencia */
+.alert {
+    border-radius: 10px;
+    border: none;
+    backdrop-filter: blur(10px);
+}
+
+/* Cards del dashboard - ARREGLADO VISIBILIDAD */
+.card.text-white .card-title,
+.card.text-white .card-text {
+    color: white !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.card.text-white.bg-primary { 
+    background: linear-gradient(135deg, #74b9ff, #0984e3) !important; 
+    border: none;
+}
+
+.card.text-white.bg-success { 
+    background: linear-gradient(135deg, #00b894, #00a085) !important; 
+    border: none;
+}
+
+.card.text-white.bg-warning { 
+    background: linear-gradient(135deg, #fdcb6e, #e17055) !important; 
+    border: none;
+}
+
+/* Títulos y textos principales */
+h1, h2, h3, h4, h5, h6 {
+    color: #2d3436 !important;
+}
+
+.text-white {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Mejora para el contenido principal */
+main {
+    color: #2d3436 !important;
+}
+
+main h1,
+main h2,
+main h3 {
+    color: #2d3436 !important;
+}
+
+/* Border bottom en el header del dashboard */
+.border-bottom {
+    border-bottom-color: #74b9ff !important;
+}
