@@ -33,7 +33,7 @@
                 <label for="cedula" class="block mb-1 font-medium">Cédula:</label>
                 <input type="number" id="cedula" name="cedula"
                     placeholder="Cédula del usuario"
-                    value="<?php echo isset($_SESSION['dataTemp']['cedula']) ? $_SESSION['dataTemp']['cedula'] : ''; ?>"
+                    value="<?php echo isset($_SESSION['dataTemp']['numero_cedula']) ? $_SESSION['dataTemp']['numero_cedula'] : ''; ?>"
                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
             </div>
             <!-- Nombre -->
@@ -41,7 +41,7 @@
                 <label for="nombre" class="block mb-1 font-medium">Nombre:</label>
                 <input type="text" id="nombre" name="nombre"
                     placeholder="Nombre del usuario"
-                    value="<?php echo isset($_SESSION['dataTemp']['nombre']) ? $_SESSION['dataTemp']['nombre'] : ''; ?>"
+                    value="<?php echo isset($_SESSION['dataTemp']['nombre_completo']) ? $_SESSION['dataTemp']['nombre_completo'] : ''; ?>"
                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
             </div>
             <!-- Teléfono -->
@@ -57,7 +57,7 @@
                 <label for="correo" class="block mb-1 font-medium">Correo:</label>
                 <input type="email" id="correo" name="correo"
                     placeholder="Correo electrónico"
-                    value="<?php echo isset($_SESSION['dataTemp']['correo']) ? $_SESSION['dataTemp']['correo'] : ''; ?>"
+                    value="<?php echo isset($_SESSION['dataTemp']['correo_electronico']) ? $_SESSION['dataTemp']['correo_electronico'] : ''; ?>"
                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
             </div>
             <!-- Contraseña -->
@@ -83,9 +83,9 @@
                 <select name="rol" id="rol" required
                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
                     <option class="text-gray-600" value="">-- Selecciona un rol --</option>
-                    <option value="paciente" <?php echo (isset($_SESSION['dataTemp']['rol']) && $_SESSION['dataTemp']['rol'] === 'paciente') ? 'selected' : 'selected'; ?>>Paciente</option>
-                    <option value="medico" <?php echo (isset($_SESSION['dataTemp']['rol']) && $_SESSION['dataTemp']['rol'] === 'medico') ? 'selected' : ''; ?>>Médico</option>
-                    <option value="admin" <?php echo (isset($_SESSION['dataTemp']['rol']) && $_SESSION['dataTemp']['rol'] === 'admin') ? 'selected' : ''; ?>>Administrador</option>
+                    <option value="paciente" <?php echo (isset($_SESSION['dataTemp']['tipo_permiso']) && $_SESSION['dataTemp']['tipo_permiso'] === 'paciente') ? 'selected' : 'selected'; ?>>Paciente</option>
+                    <option value="medico" <?php echo (isset($_SESSION['dataTemp']['tipo_permiso']) && $_SESSION['dataTemp']['tipo_permiso'] === 'medico') ? 'selected' : ''; ?>>Médico</option>
+                    <option value="administrador" <?php echo (isset($_SESSION['dataTemp']['tipo_permiso']) && $_SESSION['dataTemp']['tipo_permiso'] === 'administrador') ? 'selected' : ''; ?>>Administrador</option>
                 </select>
             </div>
             <!-- Estado -->
@@ -102,17 +102,25 @@
             <?php endif; ?>
             <!-- Especialidad (solo médicos) -->
             <div id="especialidad-container" style="display:none;" class="col-span-2 space-y-4">
-                <label for="especialidad" class="block mb-1 font-medium">Especialidad:</label>
-                <select name="id_especialidad" id="especialidad"
+                <label for="especialidad" class="block mb-1 font-medium">Cargo:</label>
+                <select name="id_cargo" id="especialidad"
                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
                     <option class="text-gray-600" value="">-- Selecciona una especialidad --</option>
                 </select>
                 <!-- Horario -->
                 <div class="col-span-2 pt-4">
-                    <label for="horario_atencion" class="block mb-1 font-medium">Horario de atención:</label>
-                    <select name="horario_atencion" id="horario_atencion"
+                    <label class="block mb-1 font-medium">Horario de atención:</label>                   
+                    <select name="horario_atencion" 
                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
                         <option class="text-gray-600" value="">-- Selecciona una horario --</option>
+                        <option class="text-gray-600" value="dia" 
+                            <?php echo (isset($_SESSION['dataTemp']['horario_atencion']) && $_SESSION['dataTemp']['horario_atencion'] === 'dia') ? 'selected' : ''; ?>>
+                            Mañana (8:00 am - 12:00 pm)
+                        </option>
+                        <option class="text-gray-600" value="tarde" 
+                            <?php echo (isset($_SESSION['dataTemp']['horario_atencion']) && $_SESSION['dataTemp']['horario_atencion'] === 'tarde') ? 'selected' : ''; ?>>
+                            Tarde (2:00pm - 6:00 pm)
+                        </option>
                     </select>
                 </div>
             </div>

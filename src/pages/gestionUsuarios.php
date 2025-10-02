@@ -8,20 +8,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (!empty($_POST['cedula'])) {
         $cedula = $_POST['cedula'];
-        $where .= " AND cedula LIKE '%$cedula%'";
+        $where .= " AND numero_cedula LIKE '%$cedula%'";
     }
     if (!empty($_POST['nombre'])) {
         $nombre = $_POST['nombre'];
-        $where .= " AND nombre LIKE '%$nombre%'";
+        $where .= " AND numero_cedula LIKE '%$nombre%'";
     }
 
     if (!empty($_POST['rol'])) {
         $rol = $_POST['rol'];
-        $where .= " AND rol = '$rol'";
+        $where .= " AND tipo_permiso = '$rol'";
     }
 }
 
-$usuarios = select("usuarios", "*", $where, $params);
+$usuarios = select("usuario", "*", $where, $params);
 
 ?>
 <!DOCTYPE html>
@@ -73,7 +73,7 @@ $usuarios = select("usuarios", "*", $where, $params);
                             <option value="">-- Selecciona un rol --</option>
                             <option value="medico" <?= (($_POST['rol'] ?? '') == 'medico') ? 'selected' : '' ?>>Médico</option>
                             <option value="paciente" <?= (($_POST['rol'] ?? '') == 'paciente') ? 'selected' : '' ?>>Paciente</option>
-                            <option value="admin" <?= (($_POST['rol'] ?? '') == 'admin') ? 'selected' : '' ?>>Administrador</option>
+                            <option value="administrador" <?= (($_POST['rol'] ?? '') == 'administrador') ? 'selected' : '' ?>>Administrador</option>
                         </select>
                     </div>
                 </div>
@@ -106,11 +106,11 @@ $usuarios = select("usuarios", "*", $where, $params);
                         <?php if (!empty($usuarios)): ?>
                             <?php foreach ($usuarios as $u): ?>
                                 <tr class="border-b">
-                                    <td class="p-3 uppercase"><?= htmlspecialchars($u['cedula']) ?></td>
-                                    <td class="p-3 uppercase"><?= htmlspecialchars($u['nombre']) ?></td>
+                                    <td class="p-3 uppercase"><?= htmlspecialchars($u['numero_cedula']) ?></td>
+                                    <td class="p-3 uppercase"><?= htmlspecialchars($u['nombre_completo']) ?></td>
                                     <td class="p-3"><?= htmlspecialchars($u['telefono']) ?></td>
-                                    <td class="p-3"><?= htmlspecialchars($u['correo']) ?></td>
-                                    <td class="p-3 uppercase"><?= htmlspecialchars($u['rol']) ?></td>
+                                    <td class="p-3"><?= htmlspecialchars($u['correo_electronico']) ?></td>
+                                    <td class="p-3 uppercase"><?= htmlspecialchars($u['tipo_permiso']) ?></td>
                                     <td class="p-3 flex gap-2 justify-center">
                                         <a href="../php/usuario.php?accion=modificarUsuario&id=<?= $u['id'] ?>"
                                             class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Modificar</a>
