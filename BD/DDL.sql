@@ -9,7 +9,8 @@ CREATE TABLE usuario(
     id int auto_increment primary key,
     nombre_completo varchar(100) not null,
     correo_electronico varchar(100) not null unique,
-    password_usuario varchar(8) not null,
+    telefono VARCHAR(20) not null unique,
+    password_usuario varchar(100) not null,
     numero_cedula int not null unique, 
     tipo_permiso ENUM('administrador', 'paciente', 'medico') not null,
     estado ENUM('activo','inactivo') not null default 'activo'
@@ -29,16 +30,16 @@ CREATE TABLE paciente(
 CREATE TABLE cargo(
     id int auto_increment primary key,
     nombre_cargo varchar(100),
-    descripcion_cargo varchar(100)
+    descripcion_cargo varchar(100),
+    estados varchar(10)
 );
-
 
 --creacion medico
 CREATE TABLE medico(
     id int auto_increment primary key,
     id_usuario int not null,
     id_cargo int not null,
-    horario_atencion ENUM('mañana','tarde') not null,
+    horario_atencion ENUM('dia','tarde') not null,
     foreign key (id_usuario) references usuario(id),
     foreign key (id_cargo) references cargo(id)
 );
@@ -70,7 +71,6 @@ CREATE TABLE cita(
 CREATE TABLE diagnostico(
     id int auto_increment primary key,
     id_cita int not null,
-    --los siguiente campos no son obligatorios
     remision TEXT,
     descripcion_remision TEXT,
     formula_asignada TEXT,
