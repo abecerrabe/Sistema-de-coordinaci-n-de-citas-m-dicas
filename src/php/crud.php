@@ -93,6 +93,7 @@ function select($tabla, $campos="*", $condicion="1", $params = [], $types = "") 
     global $conn;
 
     $sql = "SELECT $campos FROM $tabla WHERE $condicion";
+    //echo $sql;
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         die("Error en la preparación (select): " . $conn->error);

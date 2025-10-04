@@ -221,7 +221,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         "usuario 
                          INNER JOIN medico ON usuario.id = medico.id_usuario
                          INNER JOIN cargo ON medico.id_cargo = cargo.id",
-                        "usuario.*, medico.horario_atencion, cargo.id as id_cargo",
+                        "usuario.nombre_completo, usuario.estado,
+                        medico.horario_atencion, cargo.id as id_cargo",
                         "usuario.id = ? AND usuario.estado = 'activo' AND usuario.tipo_permiso = 'medico'",
                         [$id]
                     );

@@ -1,16 +1,16 @@
 function togglePassword() {
-  const input = document.getElementById("contrasena");
-  const icon = document.getElementById("toggleIcon");
+    const input = document.getElementById("contrasena");
+    const icon = document.getElementById("toggleIcon");
 
-  if (input.type === "password") {
-    input.type = "text";
-    icon.classList.remove("fa-eye-slash");
-    icon.classList.add("fa-eye");
-  } else {
-    input.type = "password";
-    icon.classList.remove("fa-eye");
-    icon.classList.add("fa-eye-slash");
-  }
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    }
 }
 
 function validacionRol() {
@@ -25,7 +25,7 @@ function validacionRol() {
             especialidadContainer.style.display = "block";
             // Cargar opciones solo si aún no se han cargado
             if (especialidadSelect.options.length <= 1) {
-                fetch("../php/getEspecialidades.php")
+                fetch("../php/getCargos.php")
                     .then(res => res.text())
                     .then(data => {
                         especialidadSelect.innerHTML += data;
@@ -44,7 +44,7 @@ function validacionRol() {
             especialidadContainer.style.display = "block";
             // Cargar opciones solo si aún no se han cargado
             if (horarioAtencionSelect.options.length <= 1) {
-                
+
                 fetch("../php/getTurnos.php")
                     .then(res => res.text())
                     .then(data => {

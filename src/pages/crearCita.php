@@ -16,6 +16,7 @@ $numero_tramite_auto = generarNumeroTramite($consecutivo);
     <title>Solicitar Cita</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/validacionCita.js"></script>
 </head>
 
 <body>
@@ -56,26 +57,43 @@ jornada -> No va, es la DISPONIBILIDAD HORARIA
 
                         <form id="formRegistro" action=<?php echo $rutaCitasPHP ?> method="POST" class="row g-3">
                             <input type="hidden" name="accion" value="insertar">
+                            <input type="hidden" id="pagina" value="cita">
                             <input type="hidden" name="numero_tramite" value=<?php echo $numero_tramite_auto ?>>
                             <div class="mb-3">
-                                <label for="tipo_cita" class="form-label">Tipo de Solicitud <span class="text-danger">*</span></label>
-                                <select class="form-select" id="tipo_cita" name="tipo_cita" required>
-                                    <option value="">Seleccionar tipo de solicitud...</option>
-                                    <option value="Consulta general">Consulta general</option>
-                                    <option value="Examen médico">Examen médico</option>
-                                    <option value="Médico especialista">Médico especialista</option>
+
+                                <label for="cargo" class="form-label">Cargo</label>
+                                <select class="form-select" id="cargo" name="id_cargo">
+                                    <option value="">-- Selecciona una cargo --</option>
+                                </select>
+                                <!-- <input type="text" class="form-control" id="tipo_cita" name="tipo_cita"
+                                placeholder="Ej: Consulta general, Examen médico, Control rutinario" required> -->
+                            </div>
+                            <div class="mb-3">
+
+                                <label for="medico" class="form-label">Medico</label>
+                                <select class="form-select" id="medico" name="id_medico">
+                                    <option value="">-- Selecciona una medico --</option>
                                 </select>
                                 <!-- <input type="text" class="form-control" id="tipo_cita" name="tipo_cita"
                                 placeholder="Ej: Consulta general, Examen médico, Control rutinario" required> -->
                             </div>
 
-                            <div class="mb-3">
-                                <label for="jornada" class="form-label">Disponibilidad Horaria <span class="text-danger">*</span></label>
-                                <select class="form-select" id="jornada" name="jornada" required>
-                                    <option value="">Seleccionar jornada...</option>
-                                    <option value="Mañana">Mañana (8:00 AM - 12:00 PM)</option>
-                                    <option value="Tarde">Tarde (2:00 PM - 6:00 PM)</option>
-                                </select>
+                            <div class="mb-3" id="jornada-container" style="display:block;">
+                                <label for="jornada" class="form-label">Disponibilidad Horaria</label>
+                                <label id="jornada" name="jornada" class="form-label text-danger fw-bold"></label>
+                                <div class="row">
+                                    <div class="col-md-6">
+
+                                        <input type="date" class="form-control" id="fecha" name="fecha">
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <select class="form-select" id="horario" name="horarios_disponible">
+                                            <option value="">-- Selecciona una horario --</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="prioridad" class="form-label">Prioridad <span class="text-danger">*</span></label>
@@ -90,10 +108,10 @@ jornada -> No va, es la DISPONIBILIDAD HORARIA
                                 <label for="estado" class="form-label">Estado <span class="text-danger">*</span></label>
                                 <select class="form-select" id="estado" name="estado" required>
                                     <option value="">Seleccionar el estado...</option>
-                                    <option value="baja">Baja</option>
-                                    <option value="moderada">Moderada</option>
-                                    <option value="alta">Alta</option>
-                                    <option value="alta">Alta</option>
+                                    <option value="pendiente">Pendiente</option>
+                                    <option value="cancelado">Cancelado</option>
+                                    <option value="inasistencia">Inasistencia</option>
+                                    <option value="completado">Completado</option>
                                 </select>
                             </div>
 
