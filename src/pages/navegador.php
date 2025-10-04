@@ -31,7 +31,7 @@ $rol = $_SESSION['rol'];
                     <?php if ($rol === 'paciente'): ?>
                         <a href=<?php $rutaCrearCitas?> class="block px-4 py-2 hover:bg-gray-100">Crear</a>
                     <?php endif; ?>
-                    <?php if ($rol === 'paciente' || $rol === 'admin'): ?>
+                    <?php if ($rol === 'paciente' || $rol === 'administrador'): ?>
                         <a href=<?php echo $rutaDashboard ?> class="block px-4 py-2 hover:bg-gray-100">Visualizar</a>
                     <?php endif; ?>
                 </div>
@@ -59,7 +59,7 @@ $rol = $_SESSION['rol'];
                 </button>
                 <div id="menu-perfil" class="absolute hidden bg-white shadow rounded mt-2 w-xs right-0 z-10">
                     <a href="<?php echo $rutaUsuarioPHP . '?accion=modificarUsuario&id=' . $idUsuario; ?>" class="block px-4 py-2 hover:bg-gray-100">Configuración</a>
-                    <?php if ($rol === 'admin'): ?>
+                    <?php if ($rol === 'administrador'): ?>
                         <a href=<?php echo $rutaGestionUsuario?> class="block px-4 py-2 hover:bg-gray-100">Gestionar usuarios</a>
                     <?php endif; ?>
                     <button id="btnLogout"  data-url="<?php echo $rutalogoutPHP; ?>" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600">Cerrar sesión</button>
