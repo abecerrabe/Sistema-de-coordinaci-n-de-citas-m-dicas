@@ -111,10 +111,11 @@ require_once "../php/rutas.php";
             <div class="col-md-6">
               <label for="alergia" class="form-label fw-semibold">Alergia</label>
               <textarea
-                class="form-control"
+                class="form-control form-control-sm"
                 id="alergia"
                 name="alergia"
-                rows="3"
+                rows="1"
+                style="resize: none;"
                 placeholder="Describa cualquier tipo de alergia"><?php echo htmlspecialchars($_SESSION['dataTemp']['alergia'] ?? '', ENT_QUOTES); ?></textarea>
                 
             </div>
@@ -123,10 +124,11 @@ require_once "../php/rutas.php";
             <div class="col-md-6">
               <label for="discapacidad" class="form-label fw-semibold">Discapacidad</label>
               <textarea
-                class="form-control"
+                class="form-control form-control-sm"
                 id="discapacidad"
                 name="discapacidad"
-                rows="3"
+                rows="1"
+                style="resize: none;"
                 placeholder="Describa si presenta alguna discapacidad"><?php echo htmlspecialchars($_SESSION['dataTemp']['discapacidad'] ?? '', ENT_QUOTES); ?></textarea>
             </div>
           </div>

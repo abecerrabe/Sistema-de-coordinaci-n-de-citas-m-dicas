@@ -60,7 +60,6 @@ CREATE TABLE cita(
     id_paciente int not null,
     id_disponibilidad_horaria int not null,
     fecha_cita date not null,
-    tipo_cita varchar(100) not null,
     prioridad ENUM('baja','moderada', 'alta') not null,
     estado ENUM('pendiente','cancelado','inasistencia','completado') not null default 'pendiente',
     foreign key (id_paciente) references paciente(id),

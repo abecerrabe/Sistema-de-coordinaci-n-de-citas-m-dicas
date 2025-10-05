@@ -231,15 +231,16 @@ $citas = select(
                                                 <td><?= htmlspecialchars($cita['nombre_medico']); ?></td>
                                                 <td class="text-uppercase"><?= htmlspecialchars($cita['prioridad']); ?></td>
                                                 <td>
-                                                    <span class=" text-uppercase badge bg-<?=
-                                                                                            match ($cita['estado']) {
-                                                                                                'pendiente' => 'warning',
-                                                                                                'completado' => 'success',
-                                                                                                'cancelado' => 'danger',
-                                                                                                'inasistencia' => 'secondary',
-                                                                                                default => 'light'
-                                                                                            };
-                                                                                            ?>"><?= htmlspecialchars($cita['estado']); ?></span>
+                                                    <?=$color = match ($estado) {
+                                                            'pendiente' => 'warning',
+                                                            'completado' => 'success',
+                                                            'cancelado' => 'danger',
+                                                            'inasistencia' => 'secondary',
+                                                            default => 'light'
+                                                        };
+                                                    ?>
+                                                    <span class="text-uppercase  badge bg-<?php echo $color; ?>"><?= htmlspecialchars($cita['estado']); ?></span>
+                                                    
                                                 </td>
                                                 <td><?= htmlspecialchars($cita['fecha_cita']); ?></td>
                                                 <td>
