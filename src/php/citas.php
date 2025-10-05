@@ -5,10 +5,12 @@ require_once "crud.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $id_paciente = $_SESSION['id'] ?? "";
+    $id_cita = post("id_cita");
+    $id_disponibilidad_horaria = post("id_disponibilidad_horaria");
     $id_medico = post("id_medico");
     $fecha = post("fecha");
     $prioridad = post("prioridad");
-    $estado = post("estado");
+    $estado = post("estado", "pendiente");
     $numero_tramite = post("numero_tramite");
     $horarios_disponible = post("horarios_disponible");
 
@@ -22,12 +24,13 @@ switch ($accion) {
     case "insertar":
 
         $datosDisponiblidad = [
-            "id_medico "        => $id_medico,
+            "id_medico"        => $id_medico,
             "hora_llegada"      => $horario_entrada,
             "hora_finalizacion" => $horario_salida
         ];
 
-        insert("disponibilidad_horaria", $datosDisponiblidad);
+       insert("disponibilidad_horaria", $datosDisponiblidad);
+
         $idDisponibilidad = lastID("disponibilidad_horaria");
 
         if (!empty($idDisponibilidad)) {
@@ -40,9 +43,84 @@ switch ($accion) {
                 "prioridad"                 => $prioridad,
                 "estado"                    => $estado
             ];
-
+            
             insert("cita", $datos, $rutaConsultarCitas);
         }
 
+        break;
+    case "modificar":
+        print_r($_POST);
+        
+        $datosDisponiblidad = [
+            "id_medico"        => $id_medico,
+            "hora_llegada"      => $horario_entrada,
+            "hora_finalizacion" => $horario_salida
+        ];
+        echo "<br><br>";
+        echo $id_disponibilidad_horaria;
+print_r($datosDisponiblidad);
+echo "<br>";
+         update(
+            "disponibilidad_horaria",
+           $datosDisponiblidad,
+            "id = '$id_disponibilidad_horaria'",
+        );
+        
+        
+        $datos = [
+            "numero_tramite"            => $numero_tramite,
+            "id_paciente"               => $id_paciente,
+            "id_disponibilidad_horaria" => $id_disponibilidad_horaria,
+            "fecha_cita"                => $fecha,
+            "prioridad"                 => $prioridad,
+            "estado"                    => $estado
+        ];
+
+echo "<br><br>";
+print_r($datos);
+echo "<br>";
+
+        update(
+            "cita",
+            $datos,
+            "id = '$id_cita'",
+            $rutaConsultarCitas
+        );
+        break;
+    case "modificarCita":
+
+        print_r($_GET);
+        $id_cita = $_GET['id'];
+        $condicion = "cita.id = ?";
+        $params = [$id_cita];
+
+        $citas = select(
+            "
+            cita
+            inner join disponibilidad_horaria as disponibilidad on cita.id_disponibilidad_horaria = disponibilidad.id
+            inner join medico on disponibilidad.id_medico = medico.id
+            inner join cargo on medico.id_cargo = cargo.id
+            ",
+            "
+            cargo.id as id_cargo, cargo.nombre_cargo, medico.id as id_medico, disponibilidad.hora_llegada, disponibilidad.hora_finalizacion, cita.* 
+            ",
+            $condicion,
+            $params
+        );
+        print_r($citas);
+
+        if (!empty($citas)) {
+            $_SESSION["dataTempCitas"] = $citas[0];
+        }
+        header("Location: $rutaCrearCitas?id=" . $id_cita);
+        break;
+    case 'deleteCita':
+         $id_cita = $_GET['id'];
+        update(
+            "cita",
+            ["estado" => 'cancelado'],
+            "id = '$id_cita'",
+            $rutaConsultarCitas
+        );
         break;
 }

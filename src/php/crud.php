@@ -92,9 +92,9 @@ function delete($tabla, $condicion, $redirectTo = null) {
 function select($tabla, $campos="*", $condicion="1", $params = [], $types = "") {
     global $conn;
 
-    $sql = "SELECT $campos FROM $tabla WHERE $condicion";
-    //echo $sql;
+    $sql = "SELECT $campos FROM $tabla WHERE $condicion";    
     $stmt = $conn->prepare($sql);
+    
     if (!$stmt) {
         die("Error en la preparación (select): " . $conn->error);
     }

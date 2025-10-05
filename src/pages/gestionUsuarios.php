@@ -46,18 +46,15 @@ $usuarios = select("usuario", "*", $where, $params);
                 </div>
 
                 <!-- Filtros y Crear -->
-                <div class="card shadow-sm mb-4">                    
+                <div class="card shadow-sm mb-4">
                     <div class="card-header">
-                        
+
                         <div class="d-flex justify-content-between align-items-center mb-0">
                             <h5 class="mb-0">Búsqueda y Gestión de Usuarios</h5>
-                            <a href="registroUsuario.php?accion=crear" class="btn btn-outline-success btn-sm fw-bold">
-                                <i class="bi bi-plus-circle"></i> Crear Usuario
-                            </a>
                         </div>
                     </div>
                     <div class="card-body">
-                        
+
 
                         <form method="POST" action="" class="row g-3">
                             <!-- Cedula -->
@@ -99,8 +96,12 @@ $usuarios = select("usuario", "*", $where, $params);
 
                 <!-- Tabla -->
                 <div class="card shadow-sm">
-                    <div class="card-header">
+
+                    <div class="card-header d-flex justify-content-between align-items-center mb-0">
                         <h5 class="mb-0">Usuarios</h5>
+                        <a href="registroUsuario.php?accion=crear" class="btn btn-primary btn-sm fw-bold">
+                            <i class="bi bi-plus-circle"></i> Crear Usuario
+                        </a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -125,11 +126,11 @@ $usuarios = select("usuario", "*", $where, $params);
                                                 <td><?= htmlspecialchars($u['correo_electronico']) ?></td>
                                                 <td class="text-uppercase text-center"><?= htmlspecialchars($u['tipo_permiso']) ?></td>
                                                 <td class="text-center">
-                                                    <a href="../php/usuario.php?accion=modificarUsuario&id=<?= $u['id'] ?>" class="btn btn-sm btn-warning">
-                                                        <i class="bi bi-pencil-square"></i> Modificar
+                                                    <a href="../php/usuario.php?accion=modificarUsuario&id=<?= $u['id'] ?>" class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-pencil-square"></i> Editar
                                                     </a>
                                                     <a href="../php/usuario.php?accion=deleteUsuarios&id=<?= $u['id'] ?>"
-                                                        class="btn btn-sm btn-danger"
+                                                        class="btn btn-sm btn-outline-danger"
                                                         onclick="return confirm('¿Seguro que deseas eliminar este usuario?')">
                                                         <i class="bi bi-trash"></i> Eliminar
                                                     </a>
