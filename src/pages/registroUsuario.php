@@ -1,5 +1,5 @@
-<?php 
-session_start(); 
+<?php
+session_start();
 require_once "../php/rutas.php";
 ?>
 <!DOCTYPE html>
@@ -27,8 +27,8 @@ require_once "../php/rutas.php";
         <?php unset($_SESSION["error"]); ?>
       <?php endif; ?>
 
-      <form id="formRegistro" action=<?php echo $rutaUsuarioPHP?> method="POST" class="row g-3">
-        <?php if (isset($_GET['accion']) && $_GET['accion'] == 'crear'): unset($_SESSION['dataTemp'])?>
+      <form id="formRegistro" action=<?php echo $rutaUsuarioPHP ?> method="POST" class="row g-3">
+        <?php if (isset($_GET['accion']) && $_GET['accion'] == 'crear'): unset($_SESSION['dataTemp']) ?>
           <input type="hidden" name="accionGestionar" value="crear">
         <?php endif; ?>
 
@@ -88,6 +88,73 @@ require_once "../php/rutas.php";
           </select>
         </div>
 
+        <div id="paciente-container" class="col-12 mt-3" style="display: none;">
+          <!-- Tipo de Sangre -->
+          <div class="mb-3">
+            <label for="tipo_sangre" class="form-label fw-semibold">Tipo de Sangre</label>
+            <select class="form-select" id="tipo_sangre" name="tipo_sangre" required>
+              <option value="">-- Selecciona un tipo de sangre --</option>
+              <option value="A+" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'A+' ? 'selected' : ''; ?>>A+</option>
+              <option value="A-" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'A-' ? 'selected' : ''; ?>>A-</option>
+              <option value="B+" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'B+' ? 'selected' : ''; ?>>B+</option>
+              <option value="B-" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'B-' ? 'selected' : ''; ?>>B-</option>
+              <option value="AB+" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'AB+' ? 'selected' : ''; ?>>AB+</option>
+              <option value="AB-" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'AB-' ? 'selected' : ''; ?>>AB-</option>
+              <option value="O+" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'O+' ? 'selected' : ''; ?>>O+</option>
+              <option value="O-" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'O-' ? 'selected' : ''; ?>>O-</option>
+            </select>
+          </div>
+
+          <!-- Fila para Alergia y Discapacidad -->
+          <div class="row g-3">
+            <!-- Alergia -->
+            <div class="col-md-6">
+              <label for="alergia" class="form-label fw-semibold">Alergia</label>
+              <textarea
+                class="form-control"
+                id="alergia"
+                name="alergia"
+                rows="3"
+                placeholder="Describa cualquier tipo de alergia"><?php echo htmlspecialchars($_SESSION['dataTemp']['alergia'] ?? '', ENT_QUOTES); ?></textarea>
+                
+            </div>
+
+            <!-- Discapacidad -->
+            <div class="col-md-6">
+              <label for="discapacidad" class="form-label fw-semibold">Discapacidad</label>
+              <textarea
+                class="form-control"
+                id="discapacidad"
+                name="discapacidad"
+                rows="3"
+                placeholder="Describa si presenta alguna discapacidad"><?php echo htmlspecialchars($_SESSION['dataTemp']['discapacidad'] ?? '', ENT_QUOTES); ?></textarea>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Especialidad (solo médicos) -->
+        <div id="especialidad-container" style="display:none;" class="col-12">
+          <label for="especialidad" class="form-label">Cargo</label>
+          <select class="form-select" id="especialidad" name="id_cargo">
+            <option value="">-- Selecciona una especialidad --</option>
+          </select>
+
+          <!-- Horario -->
+          <div class="mt-3">
+            <label for="horario" class="form-label">Horario de atención</label>
+            <select class="form-select" id="horario_atencion" name="horario_atencion">
+              <option value="">-- Selecciona un horario --</option>
+              <option value="dia" <?php echo ($_SESSION['dataTemp']['horario_atencion'] ?? '') === 'dia' ? 'selected' : ''; ?>>
+                Mañana (8:00 am - 12:00 pm)
+              </option>
+              <option value="tarde" <?php echo ($_SESSION['dataTemp']['horario_atencion'] ?? '') === 'tarde' ? 'selected' : ''; ?>>
+                Tarde (2:00 pm - 6:00 pm)
+              </option>
+            </select>
+          </div>
+        </div>
+
         <!-- Estado (solo en edición) -->
         <?php if (isset($_GET["id"])): ?>
           <div class="col-12">
@@ -100,27 +167,6 @@ require_once "../php/rutas.php";
           </div>
         <?php endif; ?>
 
-        <!-- Especialidad (solo médicos) -->
-        <div id="especialidad-container" style="display:none;" class="col-12">
-          <label for="especialidad" class="form-label">Cargo</label>
-          <select class="form-select" id="especialidad" name="id_cargo">
-            <option value="">-- Selecciona una especialidad --</option>
-          </select>
-
-          <!-- Horario -->
-          <div class="mt-3">
-            <label for="horario" class="form-label">Horario de atención</label>
-            <select class="form-select" name="horario_atencion">
-              <option value="">-- Selecciona un horario --</option>
-              <option value="dia" <?php echo ($_SESSION['dataTemp']['horario_atencion'] ?? '') === 'dia' ? 'selected' : ''; ?>>
-                Mañana (8:00 am - 12:00 pm)
-              </option>
-              <option value="tarde" <?php echo ($_SESSION['dataTemp']['horario_atencion'] ?? '') === 'tarde' ? 'selected' : ''; ?>>
-              Tarde (2:00 pm - 6:00 pm)
-              </option>
-            </select>
-          </div>
-        </div>
 
         <!-- Botón -->
         <?php $esEdicion = (isset($_GET["id"]) && $_GET["id"] !== "Registrar"); ?>

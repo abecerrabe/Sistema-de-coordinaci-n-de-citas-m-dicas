@@ -32,26 +32,49 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     Inicio
                 </a>
             </li>
+            <?php if ($rol === 'paciente'): ?>
             <li class="nav-item">
                 <a class="nav-link text-white <?php echo ($currentPage == $paginaCrearCita) ? 'active' : ''; ?>" href=<?php echo $rutaCrearCitas ?>>
                     <i class="bi bi-calendar-plus"></i>
                     Solicitar Cita
                 </a>
-            </li>
+            </li>            
+            <?php endif; ?>
             <li class="nav-item">
                 <a class="nav-link text-white <?php echo ($currentPage == $paginaConsultarCitas) ? 'active' : ''; ?>" href=<?php echo $rutaConsultarCitas ?>>
                     <i class="bi bi-calendar-check"></i>
                     Mis Citas
                 </a>
             </li>
-            <?php /* if ($rol === 'admin'):  */?>
+            <li class="nav-item">
+                <a class="nav-link text-white <?php echo ($currentPage == $paginaRegistroHistoralMedico) ? 'active' : ''; ?>" href=<?php echo $rutaRegistroHistoralMedico ?>>
+                    <i class="bi bi-journal-text"></i>
+                    Historial Medico
+                </a>
+            </li>
+            <?php if ($rol === 'medico'): ?>
+            <li class="nav-item">
+                <a class="nav-link text-white <?php echo ($currentPage == $paginaRegistroDiagnosticoMedico) ? 'active' : ''; ?>" href=<?php echo $rutaRegistroDiagnosticoMedico ?>>
+                    <i class="bi bi-pencil-square"></i>
+                    Diagnostico Medico
+                </a>
+            </li>
+            <?php endif; ?>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="<?php echo $rutaUsuarioPHP . '?accion=modificarUsuario&id=' . $idUsuario; ?>" >
+                    <i class="bi bi-person-fill"></i>
+                    Datos de Usuario
+                </a>
+            </li>
+            
+            <?php if ($rol === 'administrador'): ?>
                 <li class="nav-item">
                     <a class="nav-link text-white <?php echo ($currentPage == $paginaGestionarUsuario) ? 'active' : ''; ?>" href="../pages/gestionUsuarios.php">
-                        <i class="bi bi-person-fill"></i>
+                       <i class="bi bi-people-fill"></i>
                         Gestionar usuarios
                     </a>
                 </li>
-            <?php /* endif; */ ?>
+            <?php endif; ?>
             <li class="nav-item">
                 <a class="nav-link text-white" href=<?php echo $rutalogoutPHP ?>>
                     <i class="bi bi-box-arrow-right"></i>

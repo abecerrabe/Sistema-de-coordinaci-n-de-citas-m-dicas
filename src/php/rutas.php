@@ -1,9 +1,11 @@
 <?php
 //PAGES
 $rutaInicio = '../../index.php';
-$rutaDashboard = 'dashboard.php';
+$rutaDashboard = '../pages/dashboard.php';
 $rutaGestionUsuario = '../pages/gestionUsuarios.php';
 $rutaRegistroUsuario = '../pages/registroUsuario.php';
+$rutaRegistroHistoralMedico = '../pages/historalMedico.php';
+$rutaRegistroDiagnosticoMedico = '../pages/diagnosticoMedico.php';
 
 $rutaCrearCitas = '../pages/crearCita.php';
 $rutaConsultarCitas = '../pages/consultarCitas.php';
@@ -21,6 +23,8 @@ $paginaDashboard = 'dashboard.php';
 $paginaGestionarUsuario = 'gestionUsuarios.php';
 $paginaCrearCita = 'crearCita.php';
 $paginaConsultarCitas = 'consultarCitas.php';
+$paginaRegistroHistoralMedico = 'historalMedico.php';
+$paginaRegistroDiagnosticoMedico = 'diagnosticoMedico.php.php';
 
 function verificarAutenticacion($usuario,$estado, $ruta)
 {

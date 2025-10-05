@@ -19,11 +19,16 @@ function validacionRol() {
     const especialidadSelect = document.getElementById("especialidad");
     const horarioAtencionSelect = document.getElementById("horario_atencion");
 
+    const pacienteContainer = document.getElementById("paciente-container");
+    /*  
+     const alergiaTextArea = document.getElementById("alergia");
+     const discapacidadTextArea = document.getElementById("discapacidad"); */
+
     function toggleEspecialidad() {
         if (rolSelect.value === "medico") {
-            // Mostrar contenedor
+            // Mostrar el contenedor de especialidades
             especialidadContainer.style.display = "block";
-            // Cargar opciones solo si aún no se han cargado
+
             if (especialidadSelect.options.length <= 1) {
                 fetch("../php/getCargos.php")
                     .then(res => res.text())
@@ -32,12 +37,22 @@ function validacionRol() {
                     })
                     .catch(err => console.error("Error cargando especialidades:", err));
             }
-        } else {
-            // Ocultar si no es médico
+
+            // Ocultar datos de paciente si está visible
+            pacienteContainer.style.display = "none";
+
+        } else if (rolSelect.value === "paciente") {
+            // Mostrar campos de paciente
+            pacienteContainer.style.display = "block";
             especialidadContainer.style.display = "none";
-            especialidadSelect.innerHTML = '<option value="">-- Selecciona una especialidad --</option>';
+
+        } else {
+            // Si es administrador u otro rol, ocultar ambos
+            especialidadContainer.style.display = "none";
+            pacienteContainer.style.display = "none";
         }
     }
+
     function toggleTurnos() {
         if (rolSelect.value === "medico") {
             // Mostrar contenedor

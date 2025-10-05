@@ -4,8 +4,9 @@ session_start();
 require_once "rutas.php";
 require_once "crud.php";
 
-// 🔹 Validar contraseña
-function validarContrasena($contrasena) {
+// Validar contraseña
+function validarContrasena($contrasena)
+{
     $errores = [];
     if (strlen($contrasena) < 8) {
         $errores[] = "al menos 8 caracteres";
@@ -19,8 +20,9 @@ function validarContrasena($contrasena) {
     return $errores;
 }
 
-// 🔹 Guardar datos temporales en sesión
-function setDataTemp($data) {
+// Guardar datos temporales en sesión
+function setDataTemp($data)
+{
     $_SESSION["dataTemp"] = [
         "numero_cedula"      => $data['cedula'],
         "nombre_completo"    => $data['nombre'],
@@ -31,24 +33,29 @@ function setDataTemp($data) {
         "tipo_permiso"       => $data['rol'],
         "id_cargo"           => $data['id_cargo'],
         "horario_atencion"   => $data['horario_atencion'],
+        "tipo_sangre"        => $data['$tipo_sangre'],
+        "alergia"            => $data['$alergia'],
+        "discapacidad"       => $data['$discapacidad']
     ];
 }
 
-// 🔹 Comprobar duplicados
-function comprobarDuplicados($correo, $cedula) {
+// Comprobar duplicados
+function comprobarDuplicados($correo, $cedula)
+{
     return [
         "correo" => select("usuario", "id, correo_electronico", "correo_electronico = ? AND estado = 'activo'", [$correo]),
         "cedula" => select("usuario", "id, numero_cedula", "numero_cedula = ? AND estado = 'activo'", [$cedula])
     ];
 }
-function actualizarUsuario ($id, $cedula, $nombre, $correo, $rol, $estado){
+function actualizarUsuario($id, $cedula, $nombre, $correo, $rol, $estado)
+{
 
     $_SESSION["id"] = $id;
     $_SESSION["numero_cedula"] = $cedula;
     $_SESSION["nombre_completo"] = $nombre;
     $_SESSION["usuario"] = $correo;
     $_SESSION["tipo_permiso"] = $rol;
-    $_SESSION["estado"] = $estado; 
+    $_SESSION["estado"] = $estado;
 }
 
 
@@ -60,12 +67,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $correo = post('correo');
     $contrasena = post('contrasena');
     $estado = post('estado', 'activo');
-    $rol = post('rol', 'Paciente');
+    $rol = post('rol', 'paciente');
     $id_cargo = post('id_cargo');
     $horario_atencion = post('horario_atencion');
     $accionGestionar = post('accionGestionar');
     $usuario = post('usuario');
     $password = post('password');
+    $tipo_sangre = post('tipo_sangre');
+    $alergia = post('alergia');
+    $discapacidad = post('discapacidad');
+
 
     $passwordHash = !empty($contrasena) ? password_hash($contrasena, PASSWORD_DEFAULT) : "";
     $data = compact('cedula', 'nombre', 'telefono', 'correo', 'contrasena', 'estado', 'rol', 'id_cargo', 'horario_atencion');
@@ -106,9 +117,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 "password_usuario"   => $passwordHash,
                 "estado"             => $estado,
                 "tipo_permiso"       => $rol,
-            ], $rol != "medico" ? $ruta : null);
+            ], $rol = "administrador" ? $ruta : null);
 
-            // si es medico → insertar en tabla medico
+            $idLastUsuario = lastID("usuario");
+
             if ($rol == "medico") {
                 $usuariosRegistrado = select("usuario", "id", "correo_electronico = ?", [$correo]);
                 if (!empty($usuariosRegistrado)) {
@@ -120,12 +132,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ], $ruta);
                 }
             }
+            if (!empty($idLastUsuario) && $rol == "paciente") {
+
+                $datosPaciente = [
+                    "id_usuario"  => $idLastUsuario,
+                    "tipo_sangre" => $tipo_sangre,
+                    "alergia"     => $alergia,
+                    "discapacidad" => $discapacidad
+                ];
+                insert("paciente", $datosPaciente, $ruta);
+            }
             unset($_SESSION["dataTemp"]);
             break;
 
         case "modificar":
             $id = post('id');
-
+            print_r($_POST);
             if (!empty($contrasena)) {
                 $errores = validarContrasena($contrasena);
                 if (!empty($errores)) {
@@ -173,9 +195,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } else {
                     update("medico", $datosMedicosActualizar, "id_usuario = '$id'");
                 }
+            } else {
+                if ($rol == "paciente") {
+                    $datosPaciente = [
+                        "tipo_sangre" => $tipo_sangre,
+                        "alergia"     => $alergia,
+                        "discapacidad" => $discapacidad
+                    ];
+                    update("paciente", $datosPaciente, "id_usuario  = '$id'");
+                }
             }
-            actualizarUsuario($id, $cedula, $nombre,$correo, $rol, $estado);
-            update("usuario", $datosActualizar, "id = '$id'", $rutaGestionUsuario);
+            actualizarUsuario($id, $cedula, $nombre, $correo, $rol, $estado);
+            update("usuario", $datosActualizar, "id = '$id'");
+
+            if ($usuarios[0]['tipo_permiso'] != "administrador") {
+                header("Location: $rutaDashboard");
+            } else {
+                header("Location: $rutaGestionUsuario");
+            }
             break;
 
         case "login":
@@ -187,7 +224,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (password_verify($password, $u["password_usuario"])) {
                     actualizarUsuario($u["id"], $u["numero_cedula"], $u["nombre_completo"], $u["correo_electronico"], $u["tipo_permiso"], $u["estado"]);
 
-                    header("Location: ../pages/$rutaDashboard");
+                    header("Location: $rutaDashboard");
                     exit();
                 } else {
                     $_SESSION["error"] = "La contraseña es incorrecta";
@@ -235,6 +272,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         ]);
                     } else {
                         $_SESSION["dataTemp"] = $datosMedicos[0];
+                    }
+                }
+                if ($usuarios[0]['tipo_permiso'] == 'paciente') {
+                    $paciente = select("paciente", "*", "id_usuario  = ?", [$id]);
+                    if (!empty($paciente)) {
+                        $_SESSION["dataTemp"] = array_merge($usuarios[0], $paciente[0]);
                     }
                 }
             }

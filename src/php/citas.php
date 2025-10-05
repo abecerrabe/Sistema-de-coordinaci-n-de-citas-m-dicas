@@ -49,17 +49,12 @@ switch ($accion) {
 
         break;
     case "modificar":
-        print_r($_POST);
         
         $datosDisponiblidad = [
             "id_medico"        => $id_medico,
             "hora_llegada"      => $horario_entrada,
             "hora_finalizacion" => $horario_salida
         ];
-        echo "<br><br>";
-        echo $id_disponibilidad_horaria;
-print_r($datosDisponiblidad);
-echo "<br>";
          update(
             "disponibilidad_horaria",
            $datosDisponiblidad,
@@ -76,10 +71,6 @@ echo "<br>";
             "estado"                    => $estado
         ];
 
-echo "<br><br>";
-print_r($datos);
-echo "<br>";
-
         update(
             "cita",
             $datos,
@@ -89,7 +80,6 @@ echo "<br>";
         break;
     case "modificarCita":
 
-        print_r($_GET);
         $id_cita = $_GET['id'];
         $condicion = "cita.id = ?";
         $params = [$id_cita];
@@ -107,7 +97,6 @@ echo "<br>";
             $condicion,
             $params
         );
-        print_r($citas);
 
         if (!empty($citas)) {
             $_SESSION["dataTempCitas"] = $citas[0];
