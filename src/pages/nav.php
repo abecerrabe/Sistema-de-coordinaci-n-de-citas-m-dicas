@@ -2,14 +2,17 @@
 
 require_once "../php/rutas.php";
 
-$correo = $_SESSION['usuario'];
-$nombre = $_SESSION['nombre_completo'];
-$estado = $_SESSION['estado'];
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['estado']) || $_SESSION['estado'] !== 'activo') {
+    header("Location: $rutaInicio");
+    exit();
+}
 
-$idUsuario = $_SESSION['id'];
-$rol = $_SESSION['tipo_permiso'];
-
-verificarAutenticacion($correo, $rutaInicio, $estado);
+$correo = $_SESSION['usuario'] ?? '';
+$nombre = $_SESSION['nombre_completo'] ?? '';
+$estado = $_SESSION['estado'] ?? '';
+$idUsuario = $_SESSION['id'] ?? '';
+$rol = $_SESSION['tipo_permiso'] ?? '';
 
 // Obtener el nombre del archivo actual
 $currentPage = basename($_SERVER['PHP_SELF']);

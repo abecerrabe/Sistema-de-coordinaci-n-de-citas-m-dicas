@@ -46,9 +46,9 @@ INSERT INTO disponibilidad_horaria (id_medico, hora_llegada, hora_finalizacion) 
 (2, '14:00:00', '18:00:00');
 
 --crear citas
-INSERT INTO cita (id_paciente,id_disponibilidad_horaria,fecha_cita,tipo_cita,prioridad,estado) VALUES
-(1, 1, '2025-10-03', 'Consulta general', 'moderada', 'pendiente'),
-(2, 2, '2025-10-04', 'Control de presion cardiaca', 'alta', 'pendiente');
+INSERT INTO cita (id_paciente,id_disponibilidad_horaria,fecha_cita,prioridad,estado) VALUES
+(1, 1, '2025-10-03', 'moderada', 'pendiente'),
+(2, 2, '2025-10-04', 'alta', 'pendiente');
 
 --crear diagnosticos
 INSERT INTO diagnostico (

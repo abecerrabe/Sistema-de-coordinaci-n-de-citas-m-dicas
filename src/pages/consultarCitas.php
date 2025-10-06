@@ -114,17 +114,19 @@ require_once "../php/getConsultarCita.php";
                                                 <td><?= htmlspecialchars($cita['nombre_medico']); ?></td>
                                                 <td class="text-uppercase"><?= htmlspecialchars($cita['prioridad']); ?></td>
                                                 <td>
-                                                    <?=$color = match ($estado) {
-                                                            'pendiente' => 'warning',
-                                                            'completado' => 'success',
-                                                            'cancelado' => 'danger',
-                                                            'inasistencia' => 'secondary',
-                                                            default => 'light'
-                                                        };
+                                                    <?php
+                                                    $estado = strtolower($cita['estado']);
+                                                    $color = match ($estado) {
+                                                        'pendiente' => 'warning',
+                                                        'completado' => 'success',
+                                                        'cancelado' => 'danger',
+                                                        'inasistencia' => 'secondary',
+                                                        default => 'light'
+                                                    };
                                                     ?>
                                                     <span class="text-uppercase  badge bg-<?php echo $color; ?>"><?= htmlspecialchars($cita['estado']); ?></span>
-                                                    
                                                 </td>
+
                                                 <td><?= htmlspecialchars($cita['fecha_cita']); ?></td>
                                                 <td>
                                                     <?php
@@ -149,7 +151,7 @@ require_once "../php/getConsultarCita.php";
                                                         </a>
                                                     <?php endif; ?>
                                                 </td>
-                                                
+
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>

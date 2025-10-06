@@ -92,7 +92,7 @@ require_once "../php/rutas.php";
           <!-- Tipo de Sangre -->
           <div class="mb-3">
             <label for="tipo_sangre" class="form-label fw-semibold">Tipo de Sangre</label>
-            <select class="form-select" id="tipo_sangre" name="tipo_sangre" required>
+            <select class="form-select" id="tipo_sangre" name="tipo_sangre">
               <option value="">-- Selecciona un tipo de sangre --</option>
               <option value="A+" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'A+' ? 'selected' : ''; ?>>A+</option>
               <option value="A-" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'A-' ? 'selected' : ''; ?>>A-</option>
@@ -117,7 +117,6 @@ require_once "../php/rutas.php";
                 rows="1"
                 style="resize: none;"
                 placeholder="Describa cualquier tipo de alergia"><?php echo htmlspecialchars($_SESSION['dataTemp']['alergia'] ?? '', ENT_QUOTES); ?></textarea>
-                
             </div>
 
             <!-- Discapacidad -->
@@ -144,17 +143,18 @@ require_once "../php/rutas.php";
 
           <!-- Horario -->
           <div class="mt-3">
-            <label for="horario" class="form-label">Horario de atención</label>
+            <label for="horario_atencion" class="form-label">Horario de atención</label>
             <select class="form-select" id="horario_atencion" name="horario_atencion">
               <option value="">-- Selecciona un horario --</option>
-              <option value="dia" <?php echo ($_SESSION['dataTemp']['horario_atencion'] ?? '') === 'dia' ? 'selected' : ''; ?>>
-                Mañana (8:00 am - 12:00 pm)
-              </option>
-              <option value="tarde" <?php echo ($_SESSION['dataTemp']['horario_atencion'] ?? '') === 'tarde' ? 'selected' : ''; ?>>
-                Tarde (2:00 pm - 6:00 pm)
-              </option>
+              <option value="dia"
+              <?php echo ($_SESSION['dataTemp']['horario_atencion'] ?? '') === 'dia' ? 'selected' : ''; ?>
+              >Mañana (8:00 am - 12:00 pm)</option>
+              <option value="tarde"
+              <?php echo ($_SESSION['dataTemp']['horario_atencion'] ?? '') === 'tarde' ? 'selected' : ''; ?>
+              >Tarde (2:00 pm - 6:00 pm)</option>
             </select>
           </div>
+
         </div>
 
         <!-- Estado (solo en edición) -->
@@ -172,7 +172,9 @@ require_once "../php/rutas.php";
 
         <!-- Botón -->
         <?php $esEdicion = (isset($_GET["id"]) && $_GET["id"] !== "Registrar"); ?>
+        <?php $actualizarSession = (isset($_GET["id"]) && $_GET["id"] !== $_SESSION['id']); ?>
         <input type="hidden" name="accion" value="<?php echo $esEdicion ? 'modificar' : 'insertar'; ?>">
+        <input type="hidden" name="accionGestionUsuario"  value="<?php echo $actualizarSession ? 'modificarSession' : ''; ?>">
         <input type="hidden" name="id" value="<?php echo $esEdicion ? ($_SESSION['dataTemp']['id'] ?? '') : ''; ?>">
 
         <div class="col-12">

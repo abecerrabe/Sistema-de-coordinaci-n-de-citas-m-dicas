@@ -76,6 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tipo_sangre = post('tipo_sangre');
     $alergia = post('alergia');
     $discapacidad = post('discapacidad');
+    $accionGestionUsuario = post('accionGestionUsuario');
 
 
     $passwordHash = !empty($contrasena) ? password_hash($contrasena, PASSWORD_DEFAULT) : "";
@@ -147,7 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         case "modificar":
             $id = post('id');
-            print_r($_POST);
+            
             if (!empty($contrasena)) {
                 $errores = validarContrasena($contrasena);
                 if (!empty($errores)) {
@@ -205,10 +206,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     update("paciente", $datosPaciente, "id_usuario  = '$id'");
                 }
             }
-            actualizarUsuario($id, $cedula, $nombre, $correo, $rol, $estado);
+            
+            
+            empty($accionGestionUsuario) || $id == $_SESSION['id'] 
+            ? actualizarUsuario($id, $cedula, $nombre, $correo, $rol, $estado) 
+            : null;
+            
             update("usuario", $datosActualizar, "id = '$id'");
 
-            if ($usuarios[0]['tipo_permiso'] != "administrador") {
+            if ($_SESSION['tipo_permiso'] != "administrador" && empty($accionGestionUsuario) ) {
                 header("Location: $rutaDashboard");
             } else {
                 header("Location: $rutaGestionUsuario");
@@ -250,6 +256,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($accion) {
         case 'modificarUsuario':
             $usuarios = select("usuario", "*", "id = ?", [$id]);
+            print_r($usuarios);
             if (!empty($usuarios)) {
                 $_SESSION["dataTemp"] = $usuarios[0];
 
@@ -263,16 +270,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         "usuario.id = ? AND usuario.estado = 'activo' AND usuario.tipo_permiso = 'medico'",
                         [$id]
                     );
-
+                    echo "<br><br>";
+                    print_r($datosMedicos);
+                    echo "<br><br>";
                     if (empty($datosMedicos)) {
-                        insert("medico", [
+
+                        $dataMedico = [
                             "id_usuario"       => $id,
-                            "id_cargo"         => post('id_cargo'),
-                            "horario_atencion" => post('horario_atencion'),
-                        ]);
-                    } else {
-                        $_SESSION["dataTemp"] = $datosMedicos[0];
+                            "id_cargo"         => $datosMedicos[0]['id_cargo'],
+                            "horario_atencion" => $datosMedicos[0]['horario_atencion'],
+                        ];
+                        echo "<br><br>";
+                        print_r($dataMedico);
+                        insert("medico", $dataMedico);
+                        
                     }
+                    $_SESSION["dataTemp"] =array_merge($usuarios[0], $datosMedicos[0]);
                 }
                 if ($usuarios[0]['tipo_permiso'] == 'paciente') {
                     $paciente = select("paciente", "*", "id_usuario  = ?", [$id]);

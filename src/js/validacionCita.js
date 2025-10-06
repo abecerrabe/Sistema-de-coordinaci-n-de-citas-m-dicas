@@ -35,7 +35,6 @@ async function inicializarCitas() {
 
     // 2. Si estamos editando, precargar datos
     if (typeof dataTempCitas === "object" && dataTempCitas !== null) {
-        console.log("🟡 Editando cita existente:", dataTempCitas);
 
         // Seleccionar cargo
         cargo.value = dataTempCitas.id_cargo;
@@ -85,14 +84,14 @@ async function inicializarCitas() {
 
 // Función para cargar médicos según cargo
 async function cargarMedicos(cargoId, medicoSeleccionado = null) {
-    console.log(cargoId)
+    
     const medico = document.getElementById("medico");
     const jornadaLabel = document.getElementById("jornada");
     const horarioDisponibles = document.getElementById("horario");
 
     try {
         const res = await fetch(`../php/getMedicos.php?id_cargo=${cargoId}`);
-        console.log({res})
+        
         const data = await res.json();
         medico.innerHTML = '<option value="">-- Selecciona un médico --</option>';
         jornadaLabel.textContent = "";

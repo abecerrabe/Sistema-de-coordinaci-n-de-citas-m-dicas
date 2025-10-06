@@ -7,7 +7,7 @@ if (!isset($_GET["id"])) {
     unset($_SESSION["dataTempCitas"]);
 }
 $consecutivo = obtenerConsecutivo($_SESSION['id']);
-$numero_tramite_auto = isset($_SESSION["dataTempCitas"])  ? $_SESSION["dataTempCitas"]['numero_tramite'] : generarNumeroTramite($consecutivo);
+$numero_tramite_auto = isset($_SESSION["dataTempCitas"]['numero_tramite'])  ? $_SESSION["dataTempCitas"]['numero_tramite'] : generarNumeroTramite($consecutivo);
 ?>
 
 <!DOCTYPE html>

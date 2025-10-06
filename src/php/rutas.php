@@ -26,10 +26,3 @@ $paginaConsultarCitas = 'consultarCitas.php';
 $paginaRegistroHistoralMedico = 'historalMedico.php';
 $paginaRegistroDiagnosticoMedico = 'diagnosticoMedico.php.php';
 
-function verificarAutenticacion($usuario,$estado, $ruta)
-{
-
-    if (!isset($usuario) && (!isset($estado) && $estado == 'activo')) {
-        header("Location: $ruta");
-    }
-}
