@@ -1,135 +1,192 @@
-<?php session_start(); ?>
+<?php
+session_start();
+require_once "../php/rutas.php";
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Usuario</title>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../js/validacionRol.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Usuario</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="../js/validacionRol.js"></script>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center h-screen">
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
 
-    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-2xl">
-        <h1 class="text-2xl font-bold text-center text-blue-700 mb-6">Registro de Usuario</h1>
+  <div class="card shadow-lg w-100" style="max-width: 700px;">
+    <div class="card-body p-5">
+      <h1 class="text-center text-primary mb-4">Registro de Usuario</h1>
 
-        <?php
-        if (isset($_SESSION["error"])): ?>
-            <p class="text-red-600 font-semibold mb-4"><?php echo $_SESSION["error"]; ?></p>
-            <?php unset($_SESSION["error"]); ?>
+      <?php if (isset($_SESSION["error"])): ?>
+        <div class="alert alert-danger"><?php echo $_SESSION["error"]; ?></div>
+        <?php unset($_SESSION["error"]); ?>
+      <?php endif; ?>
+
+      <form id="formRegistro" action=<?php echo $rutaUsuarioPHP ?> method="POST" class="row g-3">
+        <?php if (isset($_GET['accion']) && $_GET['accion'] == 'crear'): unset($_SESSION['dataTemp']) ?>
+          <input type="hidden" name="accionGestionar" value="crear">
         <?php endif; ?>
 
-        <form id="formRegistro" action="../php/usuario.php" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <?php if (isset($_GET['accion']) && $_GET['accion'] == 'crear'): unset($_SESSION['dataTemp'])?>
-                <input type="hidden" name="accionGestionar" value="crear">
-            <?php endif; ?>
-            
-            <!-- Cedula -->
-            <div class="md:col-span-1 col-span-2">
-                <label for="cedula" class="block mb-1 font-medium">Cédula:</label>
-                <input type="number" id="cedula" name="cedula"
-                    placeholder="Cédula del usuario"
-                    value="<?php echo isset($_SESSION['dataTemp']['cedula']) ? $_SESSION['dataTemp']['cedula'] : ''; ?>"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+        <!-- Cedula -->
+        <div class="col-md-6">
+          <label for="cedula" class="form-label">Cédula</label>
+          <input type="number" class="form-control" id="cedula" name="cedula"
+            placeholder="Cédula del usuario"
+            value="<?php echo $_SESSION['dataTemp']['numero_cedula'] ?? ''; ?>" required>
+        </div>
+
+        <!-- Nombre -->
+        <div class="col-md-6">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="nombre" name="nombre"
+            placeholder="Nombre del usuario"
+            value="<?php echo $_SESSION['dataTemp']['nombre_completo'] ?? ''; ?>" required>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="col-md-6">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input type="number" class="form-control" id="telefono" name="telefono"
+            placeholder="Teléfono del usuario"
+            value="<?php echo $_SESSION['dataTemp']['telefono'] ?? ''; ?>" required>
+        </div>
+
+        <!-- Correo -->
+        <div class="col-md-6">
+          <label for="correo" class="form-label">Correo</label>
+          <input type="email" class="form-control" id="correo" name="correo"
+            placeholder="Correo electrónico"
+            value="<?php echo $_SESSION['dataTemp']['correo_electronico'] ?? ''; ?>" required>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="col-12">
+          <label for="contrasena" class="form-label">Contraseña</label>
+          <div class="input-group">
+            <?php $contrasenaRequired = !(isset($_GET["id"])) ? 'required' : ''; ?>
+            <input type="password" class="form-control" id="contrasena" name="contrasena"
+              placeholder="Contraseña" <?php echo $contrasenaRequired; ?>>
+            <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+              <i id="toggleIcon" class="fa-solid fa-eye-slash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Rol -->
+        <div class="col-12">
+          <label for="rol" class="form-label">Rol</label>
+          <select class="form-select" id="rol" name="rol" required>
+            <option value="">-- Selecciona un rol --</option>
+            <option value="paciente" <?php echo ($_SESSION['dataTemp']['tipo_permiso'] ?? '') === 'paciente' ? 'selected' : 'selected'; ?>>Paciente</option>
+            <option value="medico" <?php echo ($_SESSION['dataTemp']['tipo_permiso'] ?? '') === 'medico' ? 'selected' : ''; ?>>Médico</option>
+            <option value="administrador" <?php echo ($_SESSION['dataTemp']['tipo_permiso'] ?? '') === 'administrador' ? 'selected' : ''; ?>>Administrador</option>
+          </select>
+        </div>
+
+        <div id="paciente-container" class="col-12 mt-3" style="display: none;">
+          <!-- Tipo de Sangre -->
+          <div class="mb-3">
+            <label for="tipo_sangre" class="form-label fw-semibold">Tipo de Sangre</label>
+            <select class="form-select" id="tipo_sangre" name="tipo_sangre">
+              <option value="">-- Selecciona un tipo de sangre --</option>
+              <option value="A+" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'A+' ? 'selected' : ''; ?>>A+</option>
+              <option value="A-" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'A-' ? 'selected' : ''; ?>>A-</option>
+              <option value="B+" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'B+' ? 'selected' : ''; ?>>B+</option>
+              <option value="B-" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'B-' ? 'selected' : ''; ?>>B-</option>
+              <option value="AB+" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'AB+' ? 'selected' : ''; ?>>AB+</option>
+              <option value="AB-" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'AB-' ? 'selected' : ''; ?>>AB-</option>
+              <option value="O+" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'O+' ? 'selected' : ''; ?>>O+</option>
+              <option value="O-" <?php echo ($_SESSION['dataTemp']['tipo_sangre'] ?? '') === 'O-' ? 'selected' : ''; ?>>O-</option>
+            </select>
+          </div>
+
+          <!-- Fila para Alergia y Discapacidad -->
+          <div class="row g-3">
+            <!-- Alergia -->
+            <div class="col-md-6">
+              <label for="alergia" class="form-label fw-semibold">Alergia</label>
+              <textarea
+                class="form-control form-control-sm"
+                id="alergia"
+                name="alergia"
+                rows="1"
+                style="resize: none;"
+                placeholder="Describa cualquier tipo de alergia"><?php echo htmlspecialchars($_SESSION['dataTemp']['alergia'] ?? '', ENT_QUOTES); ?></textarea>
             </div>
-            <!-- Nombre -->
-            <div class="md:col-span-1 col-span-2">
-                <label for="nombre" class="block mb-1 font-medium">Nombre:</label>
-                <input type="text" id="nombre" name="nombre"
-                    placeholder="Nombre del usuario"
-                    value="<?php echo isset($_SESSION['dataTemp']['nombre']) ? $_SESSION['dataTemp']['nombre'] : ''; ?>"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+
+            <!-- Discapacidad -->
+            <div class="col-md-6">
+              <label for="discapacidad" class="form-label fw-semibold">Discapacidad</label>
+              <textarea
+                class="form-control form-control-sm"
+                id="discapacidad"
+                name="discapacidad"
+                rows="1"
+                style="resize: none;"
+                placeholder="Describa si presenta alguna discapacidad"><?php echo htmlspecialchars($_SESSION['dataTemp']['discapacidad'] ?? '', ENT_QUOTES); ?></textarea>
             </div>
-            <!-- Teléfono -->
-            <div class="md:col-span-1 col-span-2">
-                <label for="telefono" class="block mb-1 font-medium">Teléfono:</label>
-                <input type="number" id="telefono" name="telefono"
-                    placeholder="Teléfono del usuario"
-                    value="<?php echo isset($_SESSION['dataTemp']['telefono']) ? $_SESSION['dataTemp']['telefono'] : ''; ?>"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
-            </div>
-            <!-- Correo -->
-            <div class="md:col-span-1 col-span-2">
-                <label for="correo" class="block mb-1 font-medium">Correo:</label>
-                <input type="email" id="correo" name="correo"
-                    placeholder="Correo electrónico"
-                    value="<?php echo isset($_SESSION['dataTemp']['correo']) ? $_SESSION['dataTemp']['correo'] : ''; ?>"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
-            </div>
-            <!-- Contraseña -->
-            <div class="col-span-2">
-                <label for="contrasena" class="block mb-1 font-medium">Contraseña:</label>
-                <div class="relative">
-                    <?php
-                    // Si existe $_GET["id"], no es required
-                    $contrasenaRequired = !(isset($_GET["id"])) ? 'required' : '';
-                    ?>
-                    <input type="password" id="contrasena" name="contrasena"
-                        placeholder="Contraseña"
-                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 pr-10" <?php echo $contrasenaRequired; ?>>
-                    <button type="button" onclick="togglePassword()"
-                        class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600">
-                        <i id="toggleIcon" class="fa-solid fa-eye-slash"></i>
-                    </button>
-                </div>
-            </div>
-            <!-- Rol -->
-            <div class="col-span-2">
-                <label for="rol" class="block mb-1 font-medium">Rol:</label>
-                <select name="rol" id="rol" required
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
-                    <option class="text-gray-600" value="">-- Selecciona un rol --</option>
-                    <option value="paciente" <?php echo (isset($_SESSION['dataTemp']['rol']) && $_SESSION['dataTemp']['rol'] === 'paciente') ? 'selected' : 'selected'; ?>>Paciente</option>
-                    <option value="medico" <?php echo (isset($_SESSION['dataTemp']['rol']) && $_SESSION['dataTemp']['rol'] === 'medico') ? 'selected' : ''; ?>>Médico</option>
-                    <option value="admin" <?php echo (isset($_SESSION['dataTemp']['rol']) && $_SESSION['dataTemp']['rol'] === 'admin') ? 'selected' : ''; ?>>Administrador</option>
-                </select>
-            </div>
-            <!-- Estado -->
-            <?php if (isset($_GET["id"])): ?>
-                <div class="col-span-2">
-                    <label for="estado" class="block mb-1 font-medium">Estado:</label>
-                    <select name="estado" id="estado" required
-                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
-                        <option class="text-gray-600" value="">-- Selecciona un estado --</option>
-                        <option value="activo" <?php echo (isset($_SESSION['dataTemp']['estado']) && $_SESSION['dataTemp']['estado'] === 'activo') ? 'selected' : ''; ?>>Activo</option>
-                        <option value="inactivo" <?php echo (isset($_SESSION['dataTemp']['estado']) && $_SESSION['dataTemp']['estado'] === 'inactivo') ? 'selected' : ''; ?>>Inactivo</option>
-                    </select>
-                </div>
-            <?php endif; ?>
-            <!-- Especialidad (solo médicos) -->
-            <div id="especialidad-container" style="display:none;" class="col-span-2 space-y-4">
-                <label for="especialidad" class="block mb-1 font-medium">Especialidad:</label>
-                <select name="id_especialidad" id="especialidad"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
-                    <option class="text-gray-600" value="">-- Selecciona una especialidad --</option>
-                </select>
-                <!-- Horario -->
-                <div class="col-span-2 pt-4">
-                    <label for="horario_atencion" class="block mb-1 font-medium">Horario de atención:</label>
-                    <select name="horario_atencion" id="horario_atencion"
-                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
-                        <option class="text-gray-600" value="">-- Selecciona una horario --</option>
-                    </select>
-                </div>
-            </div>
-            <!-- Botón -->
-            <?php
-            // Determinar si es edición o registro
-            $esEdicion = (isset($_GET["id"]) && $_GET["id"] !== "Registrar");
-            ?>
-            <input type="hidden" name="accion" value="<?php echo $esEdicion ? 'modificar' : 'insertar'; ?>">
-            <input type="hidden" name="id" value="<?php echo $esEdicion ? (isset($_SESSION['dataTemp']['id']) ? $_SESSION['dataTemp']['id'] : '') : ''; ?>">
-            <div class="col-span-2">
-                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition">
-                    <?php echo $esEdicion ? 'Actualizar' : 'Regístrate'; ?>
-                </button>
-            </div>
-        </form>
+          </div>
+        </div>
+
+
+        <!-- Especialidad (solo médicos) -->
+        <div id="especialidad-container" style="display:none;" class="col-12">
+          <label for="especialidad" class="form-label">Cargo</label>
+          <select class="form-select" id="especialidad" name="id_cargo">
+            <option value="">-- Selecciona una especialidad --</option>
+          </select>
+
+          <!-- Horario -->
+          <div class="mt-3">
+            <label for="horario_atencion" class="form-label">Horario de atención</label>
+            <select class="form-select" id="horario_atencion" name="horario_atencion">
+              <option value="">-- Selecciona un horario --</option>
+              <option value="dia"
+              <?php echo ($_SESSION['dataTemp']['horario_atencion'] ?? '') === 'dia' ? 'selected' : ''; ?>
+              >Mañana (8:00 am - 12:00 pm)</option>
+              <option value="tarde"
+              <?php echo ($_SESSION['dataTemp']['horario_atencion'] ?? '') === 'tarde' ? 'selected' : ''; ?>
+              >Tarde (2:00 pm - 6:00 pm)</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Estado (solo en edición) -->
+        <?php if (isset($_GET["id"])): ?>
+          <div class="col-12">
+            <label for="estado" class="form-label">Estado</label>
+            <select class="form-select" id="estado" name="estado" required>
+              <option value="">-- Selecciona un estado --</option>
+              <option value="activo" <?php echo ($_SESSION['dataTemp']['estado'] ?? '') === 'activo' ? 'selected' : ''; ?>>Activo</option>
+              <option value="inactivo" <?php echo ($_SESSION['dataTemp']['estado'] ?? '') === 'inactivo' ? 'selected' : ''; ?>>Inactivo</option>
+            </select>
+          </div>
+        <?php endif; ?>
+
+
+        <!-- Botón -->
+        <?php $esEdicion = (isset($_GET["id"]) && $_GET["id"] !== "Registrar"); ?>
+        <?php $actualizarSession = (isset($_GET["id"]) && $_GET["id"] !== $_SESSION['id']); ?>
+        <input type="hidden" name="accion" value="<?php echo $esEdicion ? 'modificar' : 'insertar'; ?>">
+        <input type="hidden" name="accionGestionUsuario"  value="<?php echo $actualizarSession ? 'modificarSession' : ''; ?>">
+        <input type="hidden" name="id" value="<?php echo $esEdicion ? ($_SESSION['dataTemp']['id'] ?? '') : ''; ?>">
+
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary w-100">
+            <?php echo $esEdicion ? 'Actualizar' : 'Regístrate'; ?>
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

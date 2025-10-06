@@ -1,199 +1,312 @@
 <?php
-
 session_start();
 
 require_once "rutas.php";
 require_once "crud.php";
 
+// Validar contraseña
+function validarContrasena($contrasena)
+{
+    $errores = [];
+    if (strlen($contrasena) < 8) {
+        $errores[] = "al menos 8 caracteres";
+    }
+    if (!preg_match('/[A-Z]/', $contrasena)) {
+        $errores[] = "una letra mayúscula";
+    }
+    if (!preg_match('/[!@#$%^&*(),.?\":{}|<>]/', $contrasena)) {
+        $errores[] = "un carácter especial (!@#$%^&*(),.?\":{}|<>)";
+    }
+    return $errores;
+}
+
+// Guardar datos temporales en sesión
+function setDataTemp($data)
+{
+    $_SESSION["dataTemp"] = [
+        "numero_cedula"      => $data['cedula'],
+        "nombre_completo"    => $data['nombre'],
+        "telefono"           => $data['telefono'],
+        "correo_electronico" => $data['correo'],
+        "contrasena"         => $data['contrasena'],
+        "estado"             => $data['estado'],
+        "tipo_permiso"       => $data['rol'],
+        "id_cargo"           => $data['id_cargo'],
+        "horario_atencion"   => $data['horario_atencion'],
+        "tipo_sangre"        => $data['$tipo_sangre'],
+        "alergia"            => $data['$alergia'],
+        "discapacidad"       => $data['$discapacidad']
+    ];
+}
+
+// Comprobar duplicados
+function comprobarDuplicados($correo, $cedula)
+{
+    return [
+        "correo" => select("usuario", "id, correo_electronico", "correo_electronico = ? AND estado = 'activo'", [$correo]),
+        "cedula" => select("usuario", "id, numero_cedula", "numero_cedula = ? AND estado = 'activo'", [$cedula])
+    ];
+}
+function actualizarUsuario($id, $cedula, $nombre, $correo, $rol, $estado)
+{
+
+    $_SESSION["id"] = $id;
+    $_SESSION["numero_cedula"] = $cedula;
+    $_SESSION["nombre_completo"] = $nombre;
+    $_SESSION["usuario"] = $correo;
+    $_SESSION["tipo_permiso"] = $rol;
+    $_SESSION["estado"] = $estado;
+}
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $accion = post('accion');
+    $cedula = post('cedula');
+    $nombre = post('nombre');
+    $telefono = post('telefono');
+    $correo = post('correo');
+    $contrasena = post('contrasena');
+    $estado = post('estado', 'activo');
+    $rol = post('rol', 'paciente');
+    $id_cargo = post('id_cargo');
+    $horario_atencion = post('horario_atencion');
+    $accionGestionar = post('accionGestionar');
+    $usuario = post('usuario');
+    $password = post('password');
+    $tipo_sangre = post('tipo_sangre');
+    $alergia = post('alergia');
+    $discapacidad = post('discapacidad');
+    $accionGestionUsuario = post('accionGestionUsuario');
 
-    $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
 
-    $cedula   =  isset($_POST['cedula']) ? $_POST['cedula'] : "";
-    $nombre   =  isset($_POST['nombre']) ? $_POST['nombre'] : "";
-    $telefono = isset($_POST['telefono']) ? $_POST['telefono'] : "";
-    $correo   = isset($_POST['correo']) ? $_POST['correo'] : "";
-    $contrasena = isset($_POST['contrasena']) ? $_POST['contrasena'] : "";
-    $estado   = isset($_POST['estado']) ? $_POST['estado'] : "activo";
-    $rol      = isset($_POST['rol']) ? $_POST['rol'] : "Paciente";
-    $accionGestionar   = isset($_POST['accionGestionar']) ? $_POST['accionGestionar'] : "";
-
-    $passwordHash = password_hash($contrasena, PASSWORD_DEFAULT);
+    $passwordHash = !empty($contrasena) ? password_hash($contrasena, PASSWORD_DEFAULT) : "";
+    $data = compact('cedula', 'nombre', 'telefono', 'correo', 'contrasena', 'estado', 'rol', 'id_cargo', 'horario_atencion');
 
     switch ($accion) {
         case "insertar":
-
-            //Rutas Validas
             $ruta = empty($accionGestionar) ? $rutaInicio : $rutaGestionUsuario;
-            
-            
 
-            // Validar contraseña con regex: mínimo 8 caracteres, 1 mayúscula y 1 carácter especial
-            $errores = [];
-
-            if (strlen($contrasena) < 8) {
-                $errores[] = "al menos 8 caracteres";
-            }
-            if (!preg_match('/[A-Z]/', $contrasena)) {
-                $errores[] = "una letra mayúscula";
-            }
-            if (!preg_match('/[!@#$%^&*(),.?":{}|<>]/', $contrasena)) {
-                $errores[] = "un carácter especial (!@#$%^&*(),.?\":{}|<>)";
-            }
-
+            // validar contraseña
+            $errores = validarContrasena($contrasena);
             if (!empty($errores)) {
                 $_SESSION["error"] = "La contraseña debe contener: " . implode(", ", $errores) . ".";
-                $_SESSION["dataTemp"] = [
-                    "cedula"    => $cedula,
-                    "nombre"    => $nombre,
-                    "telefono"  => $telefono,
-                    "correo"    => $correo,
-                    "contrasena" => $contrasena,
-                    "estado"    => $estado,
-                    "rol"       => $rol
-                ];
+                setDataTemp($data);
                 header("Location: $rutaRegistroUsuario");
                 exit();
             }
 
-            // Validar si ya existe un usuario con ese correo o cedula
-            $duplicados = [
-                "correo" => select("usuarios", "id, correo", "correo='$correo' and estado= 'activo'"),
-                "cedula" => select("usuarios", "id, cedula", "cedula='$cedula' and estado= 'activo'")
-            ];
-
+            // validar duplicados
+            $duplicados = comprobarDuplicados($correo, $cedula);
             foreach ($duplicados as $campo => $resultado) {
-
                 if (count($resultado) > 0) {
                     $mensaje = $campo === "correo"
-                        ? "El correo <span class='font-bold'>" . $correo . "</span> ya esta registrada."
-                        : "La cedula <span class='font-bold'>" . $cedula . "</span> ya esta registrada.";
-
+                        ? "El correo <span class='font-bold'>" . $correo . "</span> ya está registrado."
+                        : "La cédula <span class='font-bold'>" . $cedula . "</span> ya está registrada.";
                     $_SESSION["error"] = $mensaje;
-                    $_SESSION["dataTemp"] = [
-                        "cedula"    => $cedula,
-                        "nombre"    => $nombre,
-                        "telefono"  => $telefono,
-                        "correo"    => $correo,
-                        "contrasena"=> $contrasena,
-                        "estado"    => $estado,
-                        "rol"       => $rol
-                    ];
+                    setDataTemp($data);
                     header("Location: $rutaRegistroUsuario");
                     exit();
                 }
             }
 
-            // Si pasa todas las validaciones, insertar usuario
-            insert("usuarios", [
-                "cedula"    => $cedula,
-                "nombre"    => $nombre,
-                "telefono"  => $telefono,
-                "correo"    => $correo,
-                "contrasena" => $passwordHash,
-                "estado"    => $estado,
-                "rol"       => $rol
-            ], $rol != "medico" ? "$ruta" : "");
+            // insertar usuario
+            insert("usuario", [
+                "numero_cedula"      => $cedula,
+                "nombre_completo"    => $nombre,
+                "telefono"           => $telefono,
+                "correo_electronico" => $correo,
+                "password_usuario"   => $passwordHash,
+                "estado"             => $estado,
+                "tipo_permiso"       => $rol,
+            ], $rol = "administrador" ? $ruta : null);
 
+            $idLastUsuario = lastID("usuario");
+
+            if ($rol == "medico") {
+                $usuariosRegistrado = select("usuario", "id", "correo_electronico = ?", [$correo]);
+                if (!empty($usuariosRegistrado)) {
+                    $id_usuario = $usuariosRegistrado[0]["id"];
+                    insert("medico", [
+                        "id_usuario"       => $id_usuario,
+                        "id_cargo"         => $id_cargo,
+                        "horario_atencion" => $horario_atencion,
+                    ], $ruta);
+                }
+            }
+            if (!empty($idLastUsuario) && $rol == "paciente") {
+
+                $datosPaciente = [
+                    "id_usuario"  => $idLastUsuario,
+                    "tipo_sangre" => $tipo_sangre,
+                    "alergia"     => $alergia,
+                    "discapacidad" => $discapacidad
+                ];
+                insert("paciente", $datosPaciente, $ruta);
+            }
             unset($_SESSION["dataTemp"]);
             break;
 
         case "modificar":
-            // Recoger el id del usuario a modificar
-            $id = isset($_POST['id']) ? $_POST['id'] : "";
-
-            // Si se envía una nueva contraseña, validar y hashear
+            $id = post('id');
+            
             if (!empty($contrasena)) {
-                $errores = [];
-                if (strlen($contrasena) < 8) {
-                    $errores[] = "al menos 8 caracteres";
-                }
-                if (!preg_match('/[A-Z]/', $contrasena)) {
-                    $errores[] = "una letra mayúscula";
-                }
-                if (!preg_match('/[!@#$%^&*(),.?":{}|<>]/', $contrasena)) {
-                    $errores[] = "un carácter especial (!@#$%^&*(),.?\":{}|<>)";
-                }
+                $errores = validarContrasena($contrasena);
                 if (!empty($errores)) {
-                    $_SESSION["error"] = "⚠️ La contraseña debe contener: " . implode(", ", $errores) . ".";
-                    $_SESSION["dataTemp"] = [
-                        "cedula"     => $cedula,
-                        "nombre"     => $nombre,
-                        "telefono"   => $telefono,
-                        "correo"     => $correo,
-                        "contrasena" => $contrasena,
-                        "estado"     => $estado,
-                        "rol"        => $rol
-                    ];
+                    $_SESSION["error"] = "⚠️La contraseña debe contener: " . implode(", ", $errores) . ".";
+                    setDataTemp($data);
                     header("Location: $rutaGestionUsuario");
                     exit();
                 }
                 $passwordHash = password_hash($contrasena, PASSWORD_DEFAULT);
             }
 
-            //Esto debe ir cuando el usuario se logeo
-            $_SESSION["id"] = $id;
-            $_SESSION["cedula"] = $cedula;
-            $_SESSION["usuario"] = $nombre;
-            $_SESSION["rol"] = $rol;
-            $_SESSION["estado"] = $estado;
-
-            // Preparar los datos a actualizar
             $datosActualizar = [
-                "cedula"     => $cedula,
-                "nombre"     => $nombre,
-                "telefono"   => $telefono,
-                "correo"     => $correo,
-                "estado"     => $estado,
-                "rol"        => $rol
-            ];
-            $datosMedicosActualizar = [
-                "id_especialidad "  => $id_especialidad,
-                "horario_atencion " => $horario_atencion,
+                "numero_cedula"      => $cedula,
+                "nombre_completo"    => $nombre,
+                "telefono"           => $telefono,
+                "correo_electronico" => $correo,
+                "estado"             => $estado,
+                "tipo_permiso"       => $rol
             ];
             if (!empty($contrasena)) {
-                $datosActualizar["contrasena"] = $passwordHash;
+                $datosActualizar["password_usuario"] = $passwordHash;
             }
 
             if ($rol == "medico") {
-                update("medico", $datosMedicosActualizar, "id_usuario ='$id'", $rutaGestionUsuario);
+                $datosMedicosActualizar = [
+                    "id_cargo"          => $id_cargo,
+                    "horario_atencion " => $horario_atencion,
+                ];
+
+                $datosMedicos = select(
+                    "usuario 
+                     INNER JOIN medico ON usuario.id = medico.id_usuario
+                     INNER JOIN cargo ON medico.id_cargo = cargo.id",
+                    "usuario.*, medico.horario_atencion, cargo.nombre_cargo",
+                    "usuario.id = ? AND usuario.estado = 'activo' AND usuario.tipo_permiso = 'medico'",
+                    [$id]
+                );
+
+                if (empty($datosMedicos)) {
+                    insert("medico", [
+                        "id_usuario"       => $id,
+                        "id_cargo"         => $id_cargo,
+                        "horario_atencion" => $horario_atencion,
+                    ]);
+                } else {
+                    update("medico", $datosMedicosActualizar, "id_usuario = '$id'");
+                }
+            } else {
+                if ($rol == "paciente") {
+                    $datosPaciente = [
+                        "tipo_sangre" => $tipo_sangre,
+                        "alergia"     => $alergia,
+                        "discapacidad" => $discapacidad
+                    ];
+                    update("paciente", $datosPaciente, "id_usuario  = '$id'");
+                }
             }
-            update("usuarios", $datosActualizar, "id='$id'", $rutaGestionUsuario);
+            
+            
+            empty($accionGestionUsuario) || $id == $_SESSION['id'] 
+            ? actualizarUsuario($id, $cedula, $nombre, $correo, $rol, $estado) 
+            : null;
+            
+            update("usuario", $datosActualizar, "id = '$id'");
+
+            if ($_SESSION['tipo_permiso'] != "administrador" && empty($accionGestionUsuario) ) {
+                header("Location: $rutaDashboard");
+            } else {
+                header("Location: $rutaGestionUsuario");
+            }
             break;
+
+        case "login":
+            $usuarios = select("usuario", "*", "correo_electronico = ? AND estado = 'activo'", [$usuario]);
+
+            if (count($usuarios) > 0) {
+                $u = $usuarios[0];
+
+                if (password_verify($password, $u["password_usuario"])) {
+                    actualizarUsuario($u["id"], $u["numero_cedula"], $u["nombre_completo"], $u["correo_electronico"], $u["tipo_permiso"], $u["estado"]);
+
+                    header("Location: $rutaDashboard");
+                    exit();
+                } else {
+                    $_SESSION["error"] = "La contraseña es incorrecta";
+                    $_SESSION["correoTemp"] = $usuario;
+                    header("Location: $rutaInicio");
+                    exit();
+                }
+            } else {
+                $_SESSION["error"] = "El correo no existe";
+                $_SESSION["correoTemp"] = $usuario;
+                header("Location: $rutaInicio");
+                exit();
+            }
+            break;
+
         default:
             echo "No se recibió ninguna acción válida de POST.";
     }
 } else {
-    //Parametros
-    $accion = $_GET["accion"];
-    $id = $_GET["id"];
+    $accion = $_GET["accion"] ?? null;
+    $id = $_GET["id"] ?? null;
 
     switch ($accion) {
         case 'modificarUsuario':
-            //Consulta de usuario para modificar 
-            $usuarios = select("usuarios", "*", "id='$id'");
+            $usuarios = select("usuario", "*", "id = ?", [$id]);
+            print_r($usuarios);
+            if (!empty($usuarios)) {
+                $_SESSION["dataTemp"] = $usuarios[0];
 
-            $_SESSION["dataTemp"] = $usuarios[0];
-            /* if ($usuarios[0]['rol'] == 'medico') {
-                $datosMedicos = select(
-                    "usuarios inner join medicos on usuarios.id = medicos.id_usuario",
-                    "usuarios.*, medicos.horario_atencion as turnos, medicos.id_especialidad",
-                    "usuarios.id='$id'and usuarios.estado = 'activo'"
-                );
+                if ($usuarios[0]['tipo_permiso'] == 'medico') {
+                    $datosMedicos = select(
+                        "usuario 
+                         INNER JOIN medico ON usuario.id = medico.id_usuario
+                         INNER JOIN cargo ON medico.id_cargo = cargo.id",
+                        "usuario.nombre_completo, usuario.estado,
+                        medico.horario_atencion, cargo.id as id_cargo",
+                        "usuario.id = ? AND usuario.estado = 'activo' AND usuario.tipo_permiso = 'medico'",
+                        [$id]
+                    );
+                    echo "<br><br>";
+                    print_r($datosMedicos);
+                    echo "<br><br>";
+                    if (empty($datosMedicos)) {
 
-                $_SESSION["dataTemp"] = $datosMedicos[0];
-            } */
+                        $dataMedico = [
+                            "id_usuario"       => $id,
+                            "id_cargo"         => $datosMedicos[0]['id_cargo'],
+                            "horario_atencion" => $datosMedicos[0]['horario_atencion'],
+                        ];
+                        echo "<br><br>";
+                        print_r($dataMedico);
+                        insert("medico", $dataMedico);
+                        
+                    }
+                    $_SESSION["dataTemp"] =array_merge($usuarios[0], $datosMedicos[0]);
+                }
+                if ($usuarios[0]['tipo_permiso'] == 'paciente') {
+                    $paciente = select("paciente", "*", "id_usuario  = ?", [$id]);
+                    if (!empty($paciente)) {
+                        $_SESSION["dataTemp"] = array_merge($usuarios[0], $paciente[0]);
+                    }
+                }
+            }
             header("Location: $rutaRegistroUsuario?id=" . $id);
             exit();
             break;
+
         case 'deleteUsuarios':
             update(
-                "usuarios",
-                ["estado"     => 'inactivo'],
-                "id ='$id'",
+                "usuario",
+                ["estado" => 'inactivo'],
+                "id = '$id'",
                 $rutaGestionUsuario
             );
             break;
+
         default:
             echo "No se recibió ninguna acción válida de GET.";
             break;
