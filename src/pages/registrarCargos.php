@@ -27,14 +27,14 @@ require_once "../php/rutas.php";
                 <!-- Nombre -->
                 <div class="col-md-12">
                     <label for="nombre" class="form-label">Nombres</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre"
+                    <input maxlength="100" type="text" class="form-control" id="nombre" name="nombre"
                         placeholder="Nombre del cargo"
                         value="<?php echo $_SESSION['dataTemp']['nombre_cargo'] ?? ''; ?>" required>
                 </div>
                 <!-- Descripcion de cargos -->
                 <div class="col-md-12">
                     <label for="descripcion_cargo" class="form-label">Descripción del cargo</label>
-                    <textarea class="form-control" name="descripcion_cargo" id="descripcion_cargo" placeholder="Descripción del cargo" required><?php echo $_SESSION['dataTemp']['descripcion_cargo'] ?? null; ?></textarea>
+                    <textarea maxlength="100" class="form-control" name="descripcion_cargo" id="descripcion_cargo" placeholder="Descripción del cargo" required><?php echo $_SESSION['dataTemp']['descripcion_cargo'] ?? null; ?></textarea>
                 </div>
                 <!-- Estado (solo en edición) -->
                 <?php if (isset($_GET["id"])): ?>

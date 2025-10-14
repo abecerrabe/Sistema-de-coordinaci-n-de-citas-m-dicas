@@ -95,7 +95,7 @@ require_once "../php/getGestionCargos.php";
                                                     <a href="<?= $rutaCargosPHP ?>?accion=modificarCargo&id=<?= $cargo['id'] ?>" class="btn btn-sm btn-outline-primary">
                                                         <i class="bi bi-pencil-square"></i> Editar
                                                     </a>
-                                                    <a href="<?= $rutaCargosPHP ?>?accion=deleteCargoss&id=<?= $cargo['id'] ?>"
+                                                    <a href="<?= $rutaCargosPHP ?>?accion=deleteCargos&id=<?= $cargo['id'] ?>"
                                                         class="btn btn-sm btn-outline-danger"
                                                         onclick="return confirm('¿Seguro que deseas eliminar este cargo?')">
                                                         <i class="bi bi-trash"></i> Eliminar
