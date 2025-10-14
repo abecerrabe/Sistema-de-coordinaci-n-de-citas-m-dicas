@@ -69,10 +69,10 @@ require_once "../php/getConsultarCita.php";
                                 </select>
                             </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <div class="col-md-1 d-flex align-items-end">
+                                <div class="d-flex align-items-end">
                                     <button type="submit" name="filtrar" class="btn btn-primary w-100">Filtrar</button>
                                 </div>
-                                <div class="col-md-1 d-flex align-items-end">
+                                <div class="d-flex align-items-end">
                                     <button type="submit" name="limpiar" class="btn btn-secondary w-100">Limpiar</button>
                                 </div>
                             </div>

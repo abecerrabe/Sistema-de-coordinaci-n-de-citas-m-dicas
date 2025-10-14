@@ -31,7 +31,7 @@ CREATE TABLE cargo(
     id int auto_increment primary key,
     nombre_cargo varchar(100),
     descripcion_cargo varchar(100),
-    estados varchar(10)
+    estados ENUM('activo','inactivo') not null default 'activo'
 );
 
 --creacion medico

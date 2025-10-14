@@ -72,9 +72,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             
             <?php if ($rol === 'administrador'): ?>
                 <li class="nav-item">
-                    <a class="nav-link text-white <?php echo ($currentPage == $paginaGestionarUsuario) ? 'active' : ''; ?>" href="../pages/gestionUsuarios.php">
+                    <a class="nav-link text-white <?php echo ($currentPage == $paginaGestionarUsuario) ? 'active' : ''; ?>" href=<?php echo $rutaGestionUsuario; ?>>
                        <i class="bi bi-people-fill"></i>
                         Gestionar usuarios
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white <?php echo ($currentPage == $paginaGestionCargos) ? 'active' : ''; ?>" href=<?php echo $rutaGestionCargos; ?>>
+                       <i class="bi bi-book-half"></i>
+                        Gestionar Cargos
                     </a>
                 </li>
             <?php endif; ?>

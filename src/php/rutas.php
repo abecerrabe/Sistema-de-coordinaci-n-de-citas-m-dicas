@@ -9,6 +9,8 @@ $rutaRegistroDiagnosticoMedico = '../pages/diagnosticoMedico.php';
 
 $rutaCrearCitas = '../pages/crearCita.php';
 $rutaConsultarCitas = '../pages/consultarCitas.php';
+$rutaGestionCargos = '../pages/gestionCargos.php';
+$rutaRegistrarCargos = '../pages/registrarCargos.php';
 $rutaDiagnostico = 'diagnostico.php';
 $rutaHistorial = 'historial.php';
 
@@ -16,6 +18,7 @@ $rutaHistorial = 'historial.php';
 $rutaUsuarioPHP = '../php/usuario.php';
 $rutalogoutPHP = '../php/logout.php';
 $rutaCitasPHP = '../php/citas.php';
+$rutaCargosPHP = '../php/cargos.php';
 
 //Nombres Pginas
 
@@ -24,5 +27,6 @@ $paginaGestionarUsuario = 'gestionUsuarios.php';
 $paginaCrearCita = 'crearCita.php';
 $paginaConsultarCitas = 'consultarCitas.php';
 $paginaRegistroHistoralMedico = 'historalMedico.php';
-$paginaRegistroDiagnosticoMedico = 'diagnosticoMedico.php.php';
+$paginaRegistroDiagnosticoMedico = 'diagnosticoMedico.php';
+$paginaGestionCargos = 'gestionCargos.php';
 

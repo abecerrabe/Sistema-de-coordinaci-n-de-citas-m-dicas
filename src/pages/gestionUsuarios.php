@@ -122,7 +122,7 @@ require_once "../php/getGestionUsuario.php";
                                     <?php else: ?>
                                         <tr>
                                             <td colspan="6" class="text-center py-4 fw-bold text-muted">
-                                                No se encontraron usuarios
+                                                No se encontrarón usuarios
                                             </td>
                                         </tr>
                                     <?php endif; ?>

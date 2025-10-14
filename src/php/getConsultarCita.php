@@ -1,5 +1,5 @@
 <?php
-
+require_once "../php/rutas.php";
 $idUsuario = $_SESSION['id'] ?? null;
 $rol = $_SESSION['tipo_permiso'] ?? null;
 
@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Si presionó "Limpiar", vaciar filtros
     if (isset($_POST['limpiar'])) {
         unset($_SESSION['filtros_citas']);
-        header("Location: consultarCitas.php");
+        header("Location: $paginaConsultarCitas");
         exit;
     }
 

@@ -256,7 +256,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($accion) {
         case 'modificarUsuario':
             $usuarios = select("usuario", "*", "id = ?", [$id]);
-            print_r($usuarios);
+            
             if (!empty($usuarios)) {
                 $_SESSION["dataTemp"] = $usuarios[0];
 
