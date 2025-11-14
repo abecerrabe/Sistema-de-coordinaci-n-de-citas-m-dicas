@@ -60,11 +60,16 @@
               </div>
             </form>
 
-            <!-- Enlace de registro -->
-            <p class="text-center mt-4">
-              ¿No tienes cuenta?
-              <a href="src/pages/registroUsuario.php" class="link-primary">Regístrate</a>
-            </p>
+            <!-- Enlaces de registro y olvido de contraseña -->
+            <div class="text-center mt-3">
+              <p>
+                ¿No tienes cuenta?
+                <a href="src/pages/registroUsuario.php" class="link-primary">Regístrate</a>
+              </p>
+              <p>
+                <a href="src/pages/reset_password_request.php" class="link-secondary">¿Olvidaste tu contraseña?</a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
