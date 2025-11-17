@@ -183,6 +183,17 @@ require_once "../php/rutas.php";
           </button>
         </div>
       </form>
+
+      <!-- Enlace de inicio de sesión -->
+      <div class="text-center mt-3">
+        <p>
+          ¿Ya tienes cuenta?
+          <a href="../../index.php" class="link-primary">Iniciar Sesión</a>
+        </p>
+        <p>
+          <a href="reset_password_request.php" class="link-secondary">¿Olvidaste tu contraseña?</a>
+        </p>
+      </div>
     </div>
   </div>
 
