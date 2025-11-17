@@ -12,9 +12,41 @@ function togglePassword() {
         icon.classList.add("fa-eye-slash");
     }
 }
+function toggleNewPassword() {
+    const input = document.getElementById("password") ??  document.getElementById("confirm_password");
+    const icon = document.getElementById("toggleIcon");
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    }
+}
+function toggleCongfirPassword() {
+    const input = document.getElementById("confirm_password");
+    const icon = document.getElementById("toggleIcon");
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    }
+}
 
 function validacionRol() {
     const rolSelect = document.getElementById("rol");
+    if (!rolSelect) {
+        // Si no existe el elemento, no hacer nada
+        return;
+    }
     const especialidadContainer = document.getElementById("especialidad-container");
     const especialidadSelect = document.getElementById("especialidad");
     const horarioAtencionSelect = document.getElementById("horario_atencion");
